@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>i3d — Architectural Supervision Charges</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#111;--surface:#181818;--surface2:#202020;--surface3:#282828;
+  --border:#2e2e2e;--border2:#383838;
+  --gold:#c9a84c;--gold-l:#e8c96a;--gold-d:#7a6430;--gold-bg:#1a1400;
+  --green:#2d5a27;--green-l:#4a8f42;--green-dim:#1a3317;
+  --text:#e4e4e4;--text-dim:#888;--text-muted:#4a4a4a;
+  --red:#c0392b;--amber:#d4880a;--blue:#3d6eb5;
+  --row-received-bg:#162b12;--row-received-txt:#6abf5e;--row-received-bdr:#2d5a2750;
+  --row-due-bg:#2a0f0f;--row-due-txt:#e07878;--row-due-bdr:#8b000050;
+  --row-next-bg:#1e1900;--row-next-txt:#c9a030;--row-next-bdr:#80700050;
+  --row-pending-bg:#1a1a1a;--row-pending-txt:#555;--row-pending-bdr:#33333330;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'EB Garamond',Georgia,serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+
+/* LETTERHEAD */
+.letterhead{display:flex;align-items:flex-start;justify-content:space-between;padding:22px 32px 16px;background:var(--surface);border-bottom:1px solid var(--border2)}
+.lh-logo{font-family:'Crimson Pro',Georgia,serif;font-style:italic;font-size:42px;font-weight:600;color:#2d5a27;line-height:1}
+.lh-tagline{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:#5a8a54;margin-top:3px}
+.lh-studio{font-size:11px;color:#5a8a54;font-style:italic;margin-top:2px}
+.lh-rule{width:100%;height:1px;background:linear-gradient(90deg,#2d5a27,transparent);margin:8px 0 0}
+.lh-right{text-align:right;font-size:12px;color:var(--text-dim);line-height:1.8}
+.lh-right strong{display:block;font-size:13px;color:var(--text)}
+
+/* NAV */
+.project-nav{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;overflow-x:auto}
+.pnav-tab{padding:13px 18px;font-size:12px;font-weight:600;letter-spacing:.5px;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:6px}
+.pnav-tab:hover{color:var(--text-dim)}
+.pnav-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tab-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:background .3s;background:transparent}
+.tab-dot.dot-due{background:#e07878}
+.tab-dot.dot-ok{background:#4a8f42}
+
+/* TOOLBAR */
+.toolbar{display:flex;align-items:center;justify-content:space-between;padding:9px 32px;background:var(--surface2);border-bottom:1px solid var(--border)}
+.project-badge{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;background:var(--green-dim);color:var(--green-l);padding:4px 10px;border-radius:3px;border:1px solid #2d5a2744}
+.btn{padding:7px 15px;border-radius:4px;border:none;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;transition:all .2s;font-family:inherit}
+.btn-gold{background:var(--gold);color:#111}.btn-gold:hover{background:var(--gold-l)}
+.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--text-dim)}.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn-green{background:#1a3317;border:1px solid #2d5a2766;color:var(--green-l)}.btn-green:hover{background:#2d5a27;color:#fff}
+.btn-red{background:#2a0f0f;border:1px solid #6b000066;color:#e07878}.btn-red:hover{background:#3a1515}
+
+/* MAIN */
+.main{padding:22px 32px;max-width:1200px;margin:0 auto}
+.panel{display:none}.panel.active{display:block}
+
+/* SECTION */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:6px;margin-bottom:18px;overflow:hidden}
+.section-head{padding:9px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface2)}
+.section-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
+.section-body{padding:16px}
+
+/* PROJECT HEADER */
+.project-header{background:var(--surface);border:1px solid var(--border);border-radius:6px;margin-bottom:18px;overflow:hidden;border-top:3px solid var(--gold-d)}
+.ph-head{padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between}
+.ph-number{font-family:'Crimson Pro',Georgia,serif;font-size:34px;font-style:italic;color:var(--gold-d);font-weight:600;line-height:1;margin-right:14px;padding-right:14px;border-right:1px solid var(--border)}
+.ph-title{font-size:18px;font-weight:600;color:var(--text);line-height:1.3}
+.ph-subtitle{color:var(--gold);font-size:15px;margin-top:2px}
+.ph-sub{font-size:11px;color:var(--text-dim);margin-top:3px}
+.ph-body{padding:14px 20px}
+
+/* COST CARDS */
+.cost-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.cost-card{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:11px 13px}
+.cc-label{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px}
+.cc-value{font-size:20px;font-weight:700;color:var(--gold);font-family:'EB Garamond',Georgia,serif}
+.cc-value.green{color:var(--green-l)}.cc-value.amber{color:var(--amber)}
+.cc-sub{font-size:10px;color:var(--text-muted);margin-top:2px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{padding:8px 11px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--border);background:var(--surface2)}
+td{padding:9px 11px;border-bottom:1px solid #1d1d1d;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.tfoot-row td{background:var(--surface3);font-weight:700;color:var(--gold);border-top:1px solid var(--border)}
+.td-gold{color:var(--gold);font-weight:600}.td-dim{color:var(--text-dim)}
+.td-right{text-align:right}
+
+/* ROW COLOURS */
+.rr-received td{background:var(--row-received-bg)!important;color:var(--row-received-txt)!important;border-bottom:1px solid var(--row-received-bdr)!important}
+.rr-due td{background:var(--row-due-bg)!important;color:var(--row-due-txt)!important;border-bottom:1px solid var(--row-due-bdr)!important}
+.rr-next td{background:var(--row-next-bg)!important;color:var(--row-next-txt)!important;border-bottom:1px solid var(--row-next-bdr)!important}
+.rr-pending td{background:var(--row-pending-bg)!important;color:var(--row-pending-txt)!important;border-bottom:1px solid var(--row-pending-bdr)!important}
+
+/* PILLS */
+.pill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.pill-received{background:var(--row-received-bg);color:var(--row-received-txt);border:1px solid var(--row-received-bdr)}
+.pill-pending{background:#1a1a00;color:#b8a020;border:1px solid #6b590033}
+.pill-due{background:var(--row-due-bg);color:var(--row-due-txt);border:1px solid var(--row-due-bdr)}
+
+/* INFO BOXES */
+.info-box{background:var(--surface2);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:9px 13px;margin-top:12px;font-size:12px;color:var(--text-dim);line-height:1.7}
+.warn-box{background:var(--gold-bg);border-left:3px solid var(--gold-d);border-radius:0 4px 4px 0;padding:9px 13px;font-size:12px;color:#a88030;line-height:1.7}
+.excl-list{list-style:none;padding:0}
+.excl-list li{padding:5px 0 5px 16px;position:relative;color:var(--text-dim);font-size:12px;border-bottom:1px solid #1d1d1d}
+.excl-list li:before{content:'—';position:absolute;left:0;color:var(--gold-d)}
+.excl-list li:last-child{border-bottom:none}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* INLINE INPUTS (receipt tracker) */
+.ri{background:var(--surface2);border:1px solid var(--border);border-radius:3px;color:var(--text);padding:4px 7px;font-size:11px;outline:none}
+.ri:focus{border-color:var(--gold)}
+select.ri{cursor:pointer}
+
+/* OVERVIEW */
+.overview-hero{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:22px;margin-bottom:18px;border-top:3px solid var(--green);display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.oh-name{font-size:22px;font-weight:600}
+.oh-sub{font-size:11px;color:var(--text-dim);margin-top:3px}
+.oh-total{font-size:32px;font-weight:600;color:var(--gold);font-family:'EB Garamond',Georgia,serif}
+.oh-total-label{font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--text-dim)}
+.overview-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+.ov-card{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:13px;cursor:pointer;transition:border-color .2s}
+.ov-card:hover{border-color:var(--gold)}
+.ov-num{font-family:'Crimson Pro',Georgia,serif;font-size:20px;font-style:italic;color:var(--gold-d);font-weight:600}
+.ov-title{font-size:11px;color:var(--text);font-weight:600;margin-top:4px;line-height:1.3;min-height:28px}
+.ov-fee{font-size:16px;font-weight:700;color:var(--gold);margin-top:5px}
+.ov-bar-wrap{margin-top:7px;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden}
+.ov-bar{height:100%;border-radius:2px;transition:width .5s}
+.progress-wrap{height:5px;background:var(--surface3);border-radius:3px;overflow:hidden;margin-top:4px}
+.progress-bar{height:100%;background:var(--gold);border-radius:3px}
+
+/* ═══════════════════════════════════════
+   EDIT MODAL
+═══════════════════════════════════════ */
+.modal-overlay{display:none;position:fixed;inset:0;background:#000000cc;z-index:1000;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:8px;width:100%;max-width:680px;overflow:hidden;border-top:3px solid var(--gold)}
+.modal-head{padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
+.modal-close{background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;padding:0 4px;line-height:1}.modal-close:hover{color:var(--text)}
+.modal-body{padding:20px}
+.mfield{display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.mfield label{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-dim)}
+.mfield input,.mfield select{background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:8px 10px;font-size:13px;font-family:inherit;outline:none;transition:border .2s;width:100%}
+.mfield input:focus,.mfield select:focus{border-color:var(--gold)}
+.mgrid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mgrid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.modal-divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+.stage-edit-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
+.stage-edit-row input{background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:7px 10px;font-size:12px;font-family:inherit;outline:none}
+.stage-edit-row input:focus{border-color:var(--gold)}
+.stage-label{font-size:10px;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.btn-add-stage{background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);border-radius:4px;padding:7px 14px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;width:100%;margin-top:4px;transition:all .2s}
+.btn-add-stage:hover{border-color:var(--gold);color:var(--gold)}
+.btn-remove-stage{background:none;border:1px solid #2a0f0f;color:#e07878;border-radius:4px;padding:6px 10px;cursor:pointer;font-size:11px;transition:all .2s}
+.btn-remove-stage:hover{background:#2a0f0f}
+.modal-foot{padding:14px 20px;background:var(--surface2);border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.calc-preview{background:var(--gold-bg);border:1px solid var(--gold-d);border-radius:4px;padding:9px 13px;font-size:12px;color:var(--gold);margin-top:8px}
+</style>
+</head>
+<body>
+
+<!-- LETTERHEAD -->
+<div class="letterhead">
+  <div>
+    <div class="lh-logo">i3d</div>
+    <div class="lh-tagline">Interactive 3 Dimensions</div>
+    <div class="lh-studio">Architectural Visualisation &amp; Design Studio</div>
+    <div class="lh-rule"></div>
+  </div>
+  <div class="lh-right">
+    <strong>Shakhith A.M</strong>
+    Architect, CA/97/21884<br/>Ph: 9363113693<br/>shakhith@gmail.com
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="project-nav" id="project-nav"></div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="project-badge" id="toolbar-badge">Loading…</div>
+    <div style="font-size:11px;color:var(--text-muted)">Architectural Supervision Charges</div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="btn btn-green" onclick="openEditModal()">✎ Edit Project</button>
+    <div style="position:relative;display:inline-block" id="print-menu-wrap">
+      <button class="btn btn-outline" onclick="togglePrintMenu()" id="print-btn">⎙ Print / PDF ▾</button>
+      <div id="print-menu" style="display:none;position:absolute;right:0;top:calc(100% + 4px);background:var(--surface);border:1px solid var(--border2);border-radius:4px;min-width:180px;z-index:200;overflow:hidden;box-shadow:0 4px 16px #00000066">
+        <div onclick="printCurrent()" style="padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-dim);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='transparent'">⎙ Print Current Tab</div>
+        <div style="height:1px;background:var(--border)"></div>
+        <div onclick="printAll()" style="padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-dim);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='transparent'">⎙ Print All Projects</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main-content"></div>
+
+<!-- ═══════════ EDIT MODAL ═══════════ -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Edit Project</div>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="mgrid-2">
+        <div class="mfield"><label>Project Title</label><input id="ed-title" placeholder="e.g. Library Renovation"/></div>
+        <div class="mfield"><label>Client / Organisation</label><input id="ed-client" placeholder="e.g. SNGC"/></div>
+      </div>
+      <div class="mgrid-3">
+        <div class="mfield"><label>Civil Cost (₹)</label><input type="number" id="ed-civil" placeholder="e.g. 1700000" oninput="previewFee()"/></div>
+        <div class="mfield"><label>Fee Rate (%)</label><input type="number" id="ed-rate" value="5" min="1" max="20" step="0.5" oninput="previewFee()"/></div>
+        <div class="mfield"><label>Rounded Total Fee (₹)</label><input type="number" id="ed-fee" placeholder="Auto-calculated"/></div>
+      </div>
+      <div class="calc-preview" id="ed-preview">Enter civil cost and rate to calculate fee.</div>
+      <div class="mfield" style="margin-top:14px"><label>Scope / Sub-title</label><input id="ed-scope" placeholder="e.g. Consultation + Supervision (5%)"/></div>
+
+      <hr class="modal-divider"/>
+      <div class="stage-label">Payment Stages</div>
+      <div id="ed-stages-wrap"></div>
+      <button class="btn-add-stage" onclick="addStageRow()">+ Add Stage</button>
+
+      <hr class="modal-divider"/>
+      <div class="mfield" style="margin-bottom:0">
+        <label>Notes / Additional Info</label>
+        <input id="ed-notes" placeholder="Optional notes shown below project header"/>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveProject()">✓ Save &amp; Update</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA — all projects, fully editable
+// ═══════════════════════════════════════════════
+const DEFAULT_PROJECTS = [
+  {
+    id:'p1', num:'01', client:'SNGC',
+    title:'Entrance Gateway',
+    scope:'Consultation + Supervision (5% of Projected Estimate Cost)',
+    civil:1700000, rate:5, fee:85000,
+    notes:'',
+    stages:[
+      {name:'Mobilization Advance', amt:20000, hardReceived:true, date:'2025-12-30', status:'received'},
+      {name:'Design Completion',    amt:30000, hardReceived:false, date:'', status:'pending'},
+      {name:'Foundation Complete',  amt:20000, hardReceived:false, date:'', status:'pending'},
+      {name:'Structure Complete',   amt:15000, hardReceived:false, date:'', status:'pending'},
+    ],
+    stageRemarks:['Upon agreement signing','Upon approval of drawings & BOQ','Post-foundation inspection','Post-superstructure completion'],
+  },
+  {
+    id:'p2', num:'02', client:'SNGC',
+    title:'Ladies Hostel → Classroom Conversion',
+    scope:'Consultation + Supervision (5% of Projected Estimate Cost)',
+    civil:8135000, rate:5, fee:400000,
+    notes:'',
+    stages:[
+      {name:'Mobilization Advance', amt:96000, hardReceived:true,  date:'2026-02-16', status:'received'},
+      {name:'Design Completion',    amt:80000, hardReceived:false, date:'', status:'pending'},
+      {name:'Foundation Complete',  amt:80000, hardReceived:false, date:'', status:'pending'},
+      {name:'Structure Complete',   amt:80000, hardReceived:false, date:'', status:'pending'},
+      {name:'Finishing Complete',   amt:40000, hardReceived:false, date:'', status:'pending'},
+      {name:'Final Handover',       amt:24000, hardReceived:false, date:'', status:'pending'},
+    ],
+    stageRemarks:['Upon agreement signing','Upon approval of drawings & BOQ','Post-foundation inspection','Post-superstructure completion','Post-finishing works','Upon project completion'],
+  },
+  {
+    id:'p3', num:'03', client:'SNGC',
+    title:'Admission Room & Classroom Refurbishing',
+    scope:'Consultation + Supervision (5%) · Counselling Room + Classroom',
+    civil:700000, rate:5, fee:35000,
+    notes:'Counselling Room ₹3,50,000 + Single Classroom ₹3,50,000',
+    stages:[
+      {name:'Design Completion',   amt:17500, hardReceived:false, date:'', status:'pending'},
+      {name:'Finishing Complete',  amt:17500, hardReceived:false, date:'', status:'pending'},
+    ],
+    stageRemarks:['Upon approval of drawings & BOQ','Post-finishing works'],
+  },
+  {
+    id:'p4', num:'04', client:'SNGC',
+    title:'Landscaping Design',
+    scope:'Consultation + Supervision (5%) + 3D Visualisation Charges',
+    civil:750000, rate:5, fee:50000,
+    notes:'Supervision ₹37,500 + 3D Viz ₹15,000 = ₹52,500 → Rounded ₹50,000',
+    stages:[
+      {name:'3D Viz & Design Charges', amt:20000, hardReceived:false, date:'', status:'pending'},
+      {name:'Design Completion',       amt:30000, hardReceived:false, date:'', status:'pending'},
+    ],
+    stageRemarks:['Upon design finalisation','Upon work completion'],
+  },
+  {
+    id:'p5', num:'05', client:'SNGC',
+    title:'Staff Toilet Refurbishing',
+    scope:'Consultation + Supervision (5%) · Gents & Ladies',
+    civil:700000, rate:5, fee:35000,
+    notes:'Gents Toilet ₹3,50,000 + Ladies Toilet ₹3,50,000',
+    stages:[
+      {name:'Mobilization Advance', amt:17500, hardReceived:false, date:'', status:'pending'},
+      {name:'Design Completion',    amt:17500, hardReceived:false, date:'', status:'pending'},
+    ],
+    stageRemarks:['Upon design finalisation','Upon work completion'],
+  },
+];
+
+// Load from localStorage or use defaults
+let PROJECTS = loadProjects();
+let currentPid = 'overview';
+
+function loadProjects(){
+  try{
+    const s = localStorage.getItem('i3d_sngc_projects');
+    if(s) return JSON.parse(s);
+  } catch(e){}
+  return JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+}
+
+function saveProjects(){
+  try{ localStorage.setItem('i3d_sngc_projects', JSON.stringify(PROJECTS)); } catch(e){}
+}
+
+// ═══════════════════════════════════════════════
+// RENDER ENGINE — all HTML generated from data
+// ═══════════════════════════════════════════════
+function renderAll(){
+  renderNav();
+  renderMain();
+  updateOverviewCards();
+  PROJECTS.forEach(p => applyRowColours(p.id));
+}
+
+function renderNav(){
+  const nav = document.getElementById('project-nav');
+  nav.innerHTML = `<div class="pnav-tab ${currentPid==='overview'?'active':''}" onclick="switchPanel('overview',this)">Overview</div>`
+    + PROJECTS.map((p,i)=>`<div class="pnav-tab ${currentPid===p.id?'active':''}" id="tab-${p.id}" onclick="switchPanel('${p.id}',this)">${p.num}. ${p.title}<span class="tab-dot" id="dot-${p.id}"></span></div>`).join('');
+}
+
+function renderMain(){
+  const main = document.getElementById('main-content');
+  let html = renderOverview() + PROJECTS.map(p => renderProject(p)).join('');
+  main.innerHTML = html;
+}
+
+function renderOverview(){
+  const totalFee = PROJECTS.reduce((a,p)=>a+p.fee,0);
+  const totalRecd = PROJECTS.reduce((a,p)=>a+received(p),0);
+  const clientName = PROJECTS[0]?.client || '—';
+
+  const cards = PROJECTS.map((p,i)=>{
+    const recd = received(p);
+    const pct = p.fee>0 ? Math.round(recd/p.fee*100) : 0;
+    return `<div class="ov-card" onclick="switchPanel('${p.id}',document.querySelectorAll('.pnav-tab')[${i+1}])">
+      <div class="ov-num">${p.num}</div>
+      <div class="ov-title">${p.title}</div>
+      <div class="ov-fee">${fmtINR(p.fee)}</div>
+      <div style="font-size:10px;color:var(--text-dim);margin-top:3px" id="ov-${p.id}-status"></div>
+      <div class="ov-bar-wrap"><div class="ov-bar" id="ov-${p.id}-bar"></div></div>
+    </div>`;
+  }).join('');
+
+  const rows = PROJECTS.map(p=>{
+    const recd=received(p), bal=p.fee-recd, pct=p.fee>0?Math.round(recd/p.fee*100):0;
+    return `<tr>
+      <td class="td-gold" style="font-family:'Crimson Pro',serif;font-style:italic;font-size:16px">${p.num}</td>
+      <td style="font-weight:600">${p.title}</td>
+      <td class="td-right td-dim">${fmtINR(p.civil)}</td>
+      <td class="td-right td-dim">${p.rate}%</td>
+      <td class="td-right td-gold">${fmtINR(p.fee)}</td>
+      <td class="td-right" style="color:var(--row-received-txt)">${fmtINR(recd)}</td>
+      <td class="td-right" style="color:${bal>0?'var(--amber)':'var(--row-received-txt)'}">${fmtINR(bal)}</td>
+      <td style="min-width:90px"><div style="font-size:10px;color:var(--text-dim);margin-bottom:3px">${pct}%</div><div class="progress-wrap"><div class="progress-bar" style="width:${pct}%"></div></div></td>
+    </tr>`;
+  }).join('');
+
+  return `<div class="panel ${currentPid==='overview'?'active':''}" id="panel-overview">
+    <div class="overview-hero">
+      <div>
+        <div style="font-size:12px;color:var(--text-dim);margin-bottom:3px">Client</div>
+        <div class="oh-name">${clientName}</div>
+        <div class="oh-sub">Architectural Supervision &amp; Consultation</div>
+        <div style="margin-top:10px;font-size:11px;color:var(--text-muted)">Prepared by: Shakhith A.M, CA/97/21884 · i3d Studio</div>
+      </div>
+      <div style="text-align:right;min-width:180px">
+        <div class="oh-total-label">Total Supervision Fees</div>
+        <div class="oh-total">${fmtINR(totalFee)}</div>
+        <div style="font-size:12px;color:var(--row-received-txt);margin-top:3px" id="ov-collected">${fmtINR(totalRecd)} collected</div>
+      </div>
+    </div>
+    <div class="overview-grid">${cards}</div>
+    <div class="section">
+      <div class="section-head"><div class="section-title">Consolidated Summary</div></div>
+      <div class="section-body" style="padding:0">
+        <table>
+          <thead><tr><th>#</th><th>Project</th><th class="td-right">Civil Cost</th><th class="td-right">Rate</th><th class="td-right">Total Fee</th><th class="td-right">Received</th><th class="td-right">Balance</th><th>Collection</th></tr></thead>
+          <tbody id="consolidated-tbody">${rows}</tbody>
+          <tfoot><tr class="tfoot-row">
+            <td colspan="4">TOTAL</td>
+            <td class="td-right">${fmtINR(totalFee)}</td>
+            <td class="td-right" style="color:var(--row-received-txt)">${fmtINR(totalRecd)}</td>
+            <td class="td-right" style="color:var(--amber)">${fmtINR(totalFee-totalRecd)}</td>
+            <td></td>
+          </tr></tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head"><div class="section-title">Services Not Included (All Projects)</div></div>
+      <div class="section-body">
+        <div class="warn-box">The following services are <strong>not covered</strong> under architectural supervision fees and are to be paid separately by the client.</div>
+        <ul class="excl-list" style="margin-top:12px">
+          <li>Statutory Approvals — government fees, plan sanction charges</li>
+          <li>Specialized Consultants fees — structural, MEP, geotechnical</li>
+          <li>Soil investigation and geotechnical reports</li>
+          <li>Extra 3D views beyond one main view per project</li>
+          <li>Physical scale models</li>
+          <li>Animation / walkthroughs (optional enhancement)</li>
+          <li>Interior design (if required)</li>
+        </ul>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderProject(p){
+  const recd = received(p);
+  const bal = p.fee - recd;
+
+  // schedule rows
+  const schedRows = p.stages.map((s,i)=>`
+    <tr>
+      <td class="td-gold">Stage ${i+1}</td>
+      <td>${s.name}</td>
+      <td class="td-right td-gold">${fmtINR(s.amt)}</td>
+      <td class="td-dim" style="font-size:11px">${p.stageRemarks[i]||''}</td>
+    </tr>`).join('');
+
+  // receipt rows
+  const rcptRows = p.stages.map((s,i)=>{
+    const rid = `${p.id}-r${i}`;
+    if(s.hardReceived){
+      return `<tr id="tr-${rid}" data-hardreceived="1" class="rr-received">
+        <td class="td-gold">${i+1}</td>
+        <td>${s.date ? new Date(s.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : ''}</td>
+        <td>${s.name}</td>
+        <td class="td-right">${fmtINR(s.amt)}</td>
+        <td><span class="pill pill-received">Received (T/R)</span></td>
+      </tr>`;
+    }
+    return `<tr id="tr-${rid}">
+      <td class="td-gold">${i+1}</td>
+      <td><input type="date" id="${rid}-date" class="ri" value="${s.date||''}" style="width:130px" onchange="stageFieldChange('${p.id}',${i},'date',this.value)"/></td>
+      <td>${s.name}</td>
+      <td class="td-right td-gold">${fmtINR(s.amt)}</td>
+      <td>
+        <select id="${rid}-status" class="ri" onchange="stageFieldChange('${p.id}',${i},'status',this.value)">
+          <option value="pending" ${s.status==='pending'?'selected':''}>Pending</option>
+          <option value="due"     ${s.status==='due'    ?'selected':''}>Due</option>
+          <option value="received"${s.status==='received'?'selected':''}>Received</option>
+        </select>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const totalStages = p.stages.reduce((a,s)=>a+s.amt,0);
+
+  return `<div class="panel ${currentPid===p.id?'active':''}" id="panel-${p.id}">
+    <div class="project-header">
+      <div class="ph-head">
+        <div style="display:flex;align-items:flex-start">
+          <div class="ph-number">${p.num}</div>
+          <div>
+            <div class="ph-title">Architectural Supervision Charges</div>
+            <div class="ph-subtitle">${p.title}${p.client?' — '+p.client:''}</div>
+            <div class="ph-sub">${p.scope}</div>
+          </div>
+        </div>
+        <div><span class="pill ${recd===0?'pill-pending':recd>=p.fee?'pill-received':'pill-pending'}">${recd>=p.fee?'Complete':recd>0?'In Progress':'Pending'}</span></div>
+      </div>
+      <div class="ph-body">
+        <div class="cost-cards">
+          <div class="cost-card"><div class="cc-label">Civil Cost</div><div class="cc-value">${fmtINR(p.civil)}</div></div>
+          <div class="cost-card"><div class="cc-label">Fee @ ${p.rate}%</div><div class="cc-value">${fmtINR(p.fee)}</div>${p.notes?`<div class="cc-sub" style="font-size:9px;line-height:1.4">${p.notes}</div>`:''}</div>
+          <div class="cost-card"><div class="cc-label">Received</div><div class="cc-value green" id="${p.id}-received-total">${fmtINR(recd)}</div></div>
+          <div class="cost-card"><div class="cc-label">Balance</div><div class="cc-value amber" id="${p.id}-balance">${fmtINR(bal)}</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="section">
+        <div class="section-head"><div class="section-title">Payment Schedule</div></div>
+        <div class="section-body" style="padding:0">
+          <table>
+            <thead><tr><th>Stage</th><th>Milestone</th><th class="td-right">Amount</th><th>Remarks</th></tr></thead>
+            <tbody>${schedRows}</tbody>
+            <tfoot><tr class="tfoot-row"><td colspan="2">TOTAL</td><td class="td-right">${fmtINR(totalStages)}</td><td></td></tr></tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-head"><div class="section-title">Payment Receipt Tracker</div></div>
+        <div class="section-body" style="padding:0">
+          <table>
+            <thead><tr><th>#</th><th>Date</th><th>Description</th><th class="td-right">Amount</th><th>Status</th></tr></thead>
+            <tbody>${rcptRows}</tbody>
+            <tfoot><tr class="tfoot-row"><td colspan="3">TOTAL</td><td class="td-right">${fmtINR(totalStages)}</td><td></td></tr></tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// STATE & UPDATES
+// ═══════════════════════════════════════════════
+function received(p){
+  return p.stages.reduce((a,s)=> a + (s.status==='received'||s.hardReceived ? s.amt : 0), 0);
+}
+
+function stageFieldChange(pid, idx, field, val){
+  const p = PROJECTS.find(x=>x.id===pid);
+  p.stages[idx][field] = val;
+  if(field==='status') updateReceipts(pid);
+  saveProjects();
+}
+
+function updateReceipts(pid){
+  const p = PROJECTS.find(x=>x.id===pid);
+  const recd = received(p);
+  const bal = p.fee - recd;
+  const rEl = document.getElementById(p.id+'-received-total');
+  const bEl = document.getElementById(p.id+'-balance');
+  if(rEl) rEl.textContent = fmtINR(recd);
+  if(bEl) bEl.textContent = fmtINR(bal);
+  applyRowColours(pid);
+  updateOverviewCards();
+}
+
+function applyRowColours(pid){
+  const p = PROJECTS.find(x=>x.id===pid);
+  if(!p) return;
+  let firstPendingDone = false;
+  p.stages.forEach((s,i)=>{
+    const rid = `${pid}-r${i}`;
+    const tr = document.getElementById('tr-'+rid);
+    if(!tr) return;
+    tr.classList.remove('rr-received','rr-due','rr-next','rr-pending');
+    if(s.hardReceived || s.status==='received'){
+      tr.classList.add('rr-received');
+    } else if(s.status==='due'){
+      tr.classList.add('rr-due');
+    } else {
+      if(!firstPendingDone){ tr.classList.add('rr-next'); firstPendingDone=true; }
+      else tr.classList.add('rr-pending');
+    }
+  });
+  updateTabDot(pid);
+}
+
+function updateTabDot(pid){
+  const dot = document.getElementById('dot-'+pid);
+  if(!dot) return;
+  const p = PROJECTS.find(x=>x.id===pid);
+  const hasDue = p.stages.some(s=>s.status==='due');
+  const allDone = received(p)>=p.fee;
+  dot.className = 'tab-dot';
+  if(hasDue) dot.classList.add('dot-due');
+  else if(allDone) dot.classList.add('dot-ok');
+}
+
+function updateOverviewCards(){
+  const totalRecd = PROJECTS.reduce((a,p)=>a+received(p),0);
+  const totalFee  = PROJECTS.reduce((a,p)=>a+p.fee,0);
+  const collEl = document.getElementById('ov-collected');
+  if(collEl) collEl.textContent = fmtINR(totalRecd)+' collected';
+
+  PROJECTS.forEach((p,i)=>{
+    const recd = received(p);
+    const pct = p.fee>0 ? Math.round(recd/p.fee*100) : 0;
+    const stEl  = document.getElementById('ov-'+p.id+'-status');
+    const barEl = document.getElementById('ov-'+p.id+'-bar');
+    if(stEl) stEl.innerHTML = `<span style="color:var(--text-dim)">Collected:</span> <span style="color:var(--row-received-txt);font-weight:700">${fmtINR(recd)}</span> <span style="color:var(--text-muted)">(${pct}%)</span>`;
+    if(barEl){ barEl.style.width=pct+'%'; barEl.style.background=pct>=100?'var(--green-l)':pct>0?'var(--gold)':'var(--text-muted)'; }
+  });
+}
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+function switchPanel(id, el){
+  currentPid = id;
+  document.querySelectorAll('.pnav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const panel = document.getElementById('panel-'+id);
+  if(panel) panel.classList.add('active');
+  // update toolbar badge
+  if(id==='overview'){
+    document.getElementById('toolbar-badge').textContent = PROJECTS[0]?.client || 'Overview';
+  } else {
+    const p = PROJECTS.find(x=>x.id===id);
+    document.getElementById('toolbar-badge').textContent = p ? p.client||p.title : '';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// EDIT MODAL
+// ═══════════════════════════════════════════════
+let editingPid = null;
+
+function openEditModal(){
+  const pid = currentPid==='overview' ? PROJECTS[0].id : currentPid;
+  editingPid = pid;
+  const p = PROJECTS.find(x=>x.id===pid);
+  document.getElementById('ed-title').value  = p.title;
+  document.getElementById('ed-client').value = p.client||'';
+  document.getElementById('ed-civil').value  = p.civil;
+  document.getElementById('ed-rate').value   = p.rate;
+  document.getElementById('ed-fee').value    = p.fee;
+  document.getElementById('ed-scope').value  = p.scope;
+  document.getElementById('ed-notes').value  = p.notes||'';
+  renderStageEditors(p);
+  previewFee();
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEditModal(){
+  document.getElementById('edit-modal').classList.remove('open');
+  editingPid = null;
+}
+
+function renderStageEditors(p){
+  const wrap = document.getElementById('ed-stages-wrap');
+  wrap.innerHTML = p.stages.map((s,i)=>`
+    <div class="stage-edit-row" id="sed-row-${i}">
+      <input placeholder="Stage name" value="${s.name}" oninput="edStageField(${i},'name',this.value)"/>
+      <input type="number" placeholder="Amount ₹" value="${s.amt}" oninput="edStageField(${i},'amt',this.value)"/>
+      <button class="btn-remove-stage" onclick="removeStageRow(${i})">✕</button>
+    </div>`).join('');
+}
+
+let edStages = [];
+function openEditModal(){
+  const pid = currentPid==='overview' ? PROJECTS[0].id : currentPid;
+  editingPid = pid;
+  const p = PROJECTS.find(x=>x.id===pid);
+  // deep copy stages for editing
+  edStages = p.stages.map(s=>({...s}));
+  document.getElementById('ed-title').value  = p.title;
+  document.getElementById('ed-client').value = p.client||'';
+  document.getElementById('ed-civil').value  = p.civil;
+  document.getElementById('ed-rate').value   = p.rate;
+  document.getElementById('ed-fee').value    = p.fee;
+  document.getElementById('ed-scope').value  = p.scope;
+  document.getElementById('ed-notes').value  = p.notes||'';
+  renderModalStages();
+  previewFee();
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function renderModalStages(){
+  const wrap = document.getElementById('ed-stages-wrap');
+  wrap.innerHTML = edStages.map((s,i)=>`
+    <div class="stage-edit-row">
+      <input placeholder="Stage name" value="${escHtml(s.name)}" oninput="edStages[${i}].name=this.value"/>
+      <input type="number" placeholder="Amount ₹" value="${s.amt}" oninput="edStages[${i}].amt=parseFloat(this.value)||0;updateStageTotal()"/>
+      <button class="btn-remove-stage" onclick="removeStageRow(${i})">✕</button>
+    </div>`).join('');
+  updateStageTotal();
+}
+
+function addStageRow(){
+  edStages.push({name:'New Stage', amt:0, hardReceived:false, date:'', status:'pending'});
+  renderModalStages();
+}
+
+function removeStageRow(i){
+  edStages.splice(i,1);
+  renderModalStages();
+}
+
+function updateStageTotal(){
+  const total = edStages.reduce((a,s)=>a+s.amt,0);
+  document.getElementById('ed-fee').placeholder = 'Stages total: '+fmtINR(total);
+}
+
+function previewFee(){
+  const civil = parseFloat(document.getElementById('ed-civil').value)||0;
+  const rate  = parseFloat(document.getElementById('ed-rate').value)||5;
+  const calc  = Math.round(civil*(rate/100));
+  document.getElementById('ed-preview').textContent =
+    civil ? `₹${civil.toLocaleString('en-IN')} × ${rate}% = ₹${calc.toLocaleString('en-IN')} → set your rounded total fee above` : 'Enter civil cost and rate to calculate fee.';
+  if(civil && !document.getElementById('ed-fee').value) document.getElementById('ed-fee').value = calc;
+}
+
+function saveProject(){
+  const p = PROJECTS.find(x=>x.id===editingPid);
+  p.title  = document.getElementById('ed-title').value.trim() || p.title;
+  p.client = document.getElementById('ed-client').value.trim();
+  p.civil  = parseFloat(document.getElementById('ed-civil').value)||p.civil;
+  p.rate   = parseFloat(document.getElementById('ed-rate').value)||p.rate;
+  p.fee    = parseFloat(document.getElementById('ed-fee').value)||p.fee;
+  p.scope  = document.getElementById('ed-scope').value.trim() || p.scope;
+  p.notes  = document.getElementById('ed-notes').value.trim();
+  // merge stage names/amounts preserving status/date from existing
+  edStages.forEach((es,i)=>{
+    if(i < p.stages.length){
+      p.stages[i].name = es.name;
+      p.stages[i].amt  = es.amt;
+    } else {
+      p.stages.push({name:es.name, amt:es.amt, hardReceived:false, date:'', status:'pending'});
+    }
+  });
+  // trim if stages removed
+  if(edStages.length < p.stages.length) p.stages = p.stages.slice(0, edStages.length);
+  // rebuild stageRemarks to match length
+  while(p.stageRemarks.length < p.stages.length) p.stageRemarks.push('');
+  p.stageRemarks = p.stageRemarks.slice(0, p.stages.length);
+
+  saveProjects();
+  closeEditModal();
+  renderAll();
+  // re-apply colours after re-render
+  PROJECTS.forEach(proj=>applyRowColours(proj.id));
+}
+
+// ═══════════════════════════════════════════════
+// PRINT
+// ═══════════════════════════════════════════════
+function togglePrintMenu(){
+  const m=document.getElementById('print-menu');
+  m.style.display = m.style.display==='none' ? 'block' : 'none';
+}
+document.addEventListener('click', function(e){
+  const wrap=document.getElementById('print-menu-wrap');
+  if(wrap && !wrap.contains(e.target)) document.getElementById('print-menu').style.display='none';
+});
+
+function printCurrent(){
+  document.getElementById('print-menu').style.display='none';
+  const pid = currentPid;
+  if(pid==='overview'){
+    printOverviewOnly();
+  } else {
+    const p = PROJECTS.find(x=>x.id===pid);
+    if(p) printProjectsInFrame([p], false);
+  }
+}
+
+function printAll(){
+  document.getElementById('print-menu').style.display='none';
+  printProjectsInFrame(PROJECTS, true);
+}
+
+// kept for backward compat
+function printReport(){
+  const old = document.getElementById('i3d-print-frame');
+  if(old) old.remove();
+
+  const totalFee  = PROJECTS.reduce((a,p)=>a+p.fee,0);
+  const totalRecd = PROJECTS.reduce((a,p)=>a+received(p),0);
+  const clientName = PROJECTS[0]?.client||'';
+
+  const projSections = PROJECTS.map(p=>{
+    const recd=received(p), bal=p.fee-recd;
+    const schedRows = p.stages.map((s,i)=>`<tr><td>Stage ${i+1}</td><td>${s.name}</td><td style="text-align:right;font-weight:600;color:#8a6820">${fmtINR(s.amt)}</td><td style="color:#888;font-size:10px">${p.stageRemarks[i]||''}</td></tr>`).join('');
+    const rcptRows  = p.stages.map((s,i)=>{
+      let bg='#f9f9f9',col='#888';
+      if(s.hardReceived||s.status==='received'){bg='#e8f5e2';col='#2d6e27';}
+      else if(s.status==='due'){bg='#fde8e8';col='#c0392b';}
+      else if(i===p.stages.findIndex(x=>!x.hardReceived&&x.status!=='received')){bg='#fffbe0';col='#8a6820';}
+      return `<tr style="background:${bg}"><td style="color:${col};font-weight:600">${i+1}</td><td>${s.date?new Date(s.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):''}</td><td>${s.name}</td><td style="text-align:right;color:${col};font-weight:600">${fmtINR(s.amt)}</td><td style="color:${col}">${s.hardReceived?'Received (T/R)':s.status==='received'?'Received':s.status==='due'?'⚠ Due':'Pending'}</td></tr>`;
+    }).join('');
+    return `<div style="page-break-inside:avoid;margin-bottom:20px;border:1px solid #ddd;border-radius:4px;overflow:hidden;border-top:3px solid #c9a84c">
+      <div style="background:#f5ead0;padding:9px 14px;border-bottom:1px solid #ddd;display:flex;justify-content:space-between;align-items:center">
+        <div><span style="font-family:Georgia,serif;font-style:italic;font-size:18px;color:#7a6430;font-weight:600;margin-right:10px">${p.num}</span><span style="font-size:13px;font-weight:600">${p.title}</span></div>
+        <div style="font-size:11px;color:#555">Fee: <b style="color:#8a6820">${fmtINR(p.fee)}</b> &nbsp;|&nbsp; Recd: <b style="color:#2d6e27">${fmtINR(recd)}</b> &nbsp;|&nbsp; Bal: <b style="color:#b87a10">${fmtINR(bal)}</b></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div style="padding:10px;border-right:1px solid #eee">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#999;margin-bottom:6px">Payment Schedule</div>
+          <table style="width:100%;border-collapse:collapse;font-size:11px">
+            <thead><tr><th style="padding:4px 6px;background:#faf6ee;border-bottom:1px solid #e0d5b5;text-align:left;font-size:9px;text-transform:uppercase;color:#777">Stage</th><th style="padding:4px 6px;background:#faf6ee;border-bottom:1px solid #e0d5b5;text-align:left;font-size:9px;text-transform:uppercase;color:#777">Milestone</th><th style="padding:4px 6px;background:#faf6ee;border-bottom:1px solid #e0d5b5;text-align:right;font-size:9px;text-transform:uppercase;color:#777">Amount</th><th style="padding:4px 6px;background:#faf6ee;border-bottom:1px solid #e0d5b5;text-align:left;font-size:9px;text-transform:uppercase;color:#777">Remarks</th></tr></thead>
+            <tbody>${schedRows}</tbody>
+          </table>
+        </div>
+        <div style="padding:10px">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#999;margin-bottom:6px">Receipt Tracker</div>
+          <table style="width:100%;border-collapse:collapse;font-size:11px">
+            <thead><tr><th style="padding:4px 6px;background:#faf6ee;border-bottom:1px solid #e0d5b5;font-size:9px;text-transform:uppercase;color:#777">#</th><th style="padding:4px 6px;background:#faf6ee;border-bottom:1px solid #e0d5b5;font-size:9px;text-transform:uppercase;color:#777">Date</th><th style="padding:4px 6px;background:#faf6ee;border-bottom:1px solid #e0d5b5;font-size:9px;text-transform:uppercase;color:#777">Description</th><th style="padding:4px 6px;background:#faf6ee;border-bottom:1px solid #e0d5b5;text-align:right;font-size:9px;text-transform:uppercase;color:#777">Amount</th><th style="padding:4px 6px;background:#faf6ee;border-bottom:1px solid #e0d5b5;font-size:9px;text-transform:uppercase;color:#777">Status</th></tr></thead>
+            <tbody>${rcptRows}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600&family=Crimson+Pro:ital,wght@0,400;0,600&display=swap" rel="stylesheet"/>
+  <title>i3d — Supervision Charges</title>
+  <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'EB Garamond',Georgia,serif;color:#222;font-size:12px;background:#fff}.page{max-width:960px;margin:0 auto;padding:28px}@media print{button{display:none!important}}</style>
+  </head><body><div class="page">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:14px;border-bottom:3px solid #c9a84c;margin-bottom:18px">
+    <div>
+      <div style="font-family:'Crimson Pro',Georgia,serif;font-style:italic;font-size:36px;font-weight:600;color:#2d5a27;line-height:1">i3d</div>
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#5a8a54;margin-top:3px">Interactive 3 Dimensions</div>
+      <div style="font-size:11px;color:#5a8a54;font-style:italic">Architectural Visualisation &amp; Design Studio</div>
+    </div>
+    <div style="text-align:right;font-size:11px;color:#666;line-height:1.8"><strong style="display:block;font-size:13px;color:#222">Shakhith A.M</strong>Architect, CA/97/21884<br/>Ph: 9363113693<br/>shakhith@gmail.com</div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px">
+    <div><div style="font-size:17px;font-weight:600">Architectural Supervision Charges</div><div style="font-size:12px;color:#888;margin-top:2px">${clientName} &nbsp;·&nbsp; Generated: ${new Date().toLocaleDateString('en-IN')}</div></div>
+    <div style="text-align:right"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#999">Total Fees</div><div style="font-size:24px;font-weight:700;color:#8a6820">${fmtINR(totalFee)}</div><div style="font-size:11px;color:#2d6e27">${fmtINR(totalRecd)} collected</div></div>
+  </div>
+  <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:18px">
+    <thead><tr>${['#','Project','Civil Cost','Rate','Fee','Received','Balance'].map(h=>`<th style="padding:6px 8px;background:#f5ead0;border-bottom:1px solid #e0d5b5;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:#777">${h}</th>`).join('')}</tr></thead>
+    <tbody>${PROJECTS.map(p=>{const r=received(p),b=p.fee-r;return`<tr><td style="padding:6px 8px;border-bottom:1px solid #eee;font-style:italic;color:#8a6820;font-family:Georgia,serif">${p.num}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;font-weight:600">${p.title}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;color:#888">${fmtINR(p.civil)}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;color:#888">${p.rate}%</td><td style="padding:6px 8px;border-bottom:1px solid #eee;font-weight:600;color:#8a6820">${fmtINR(p.fee)}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;color:#2d6e27">${fmtINR(r)}</td><td style="padding:6px 8px;border-bottom:1px solid #eee;color:#b87a10">${fmtINR(b)}</td></tr>`;}).join('')}</tbody>
+    <tfoot><tr><td colspan="4" style="padding:6px 8px;background:#f5ead0;font-weight:700;color:#8a6820">TOTAL</td><td style="padding:6px 8px;background:#f5ead0;font-weight:700;color:#8a6820">${fmtINR(totalFee)}</td><td style="padding:6px 8px;background:#f5ead0;color:#2d6e27;font-weight:700">${fmtINR(totalRecd)}</td><td style="padding:6px 8px;background:#f5ead0;color:#b87a10;font-weight:700">${fmtINR(totalFee-totalRecd)}</td></tr></tfoot>
+  </table>
+  ${projSections}
+  <div style="margin-top:18px;padding-top:12px;border-top:1px solid #ddd;display:flex;justify-content:space-between;font-size:10px;color:#aaa"><span>i3d Studio, Coimbatore — Architectural Supervision Charges</span><span>Generated: ${new Date().toLocaleDateString('en-IN')}</span></div>
+  <div style="text-align:center;margin-top:16px"><button onclick="parent.triggerIframePrint()" style="background:#c9a84c;color:#111;border:none;padding:9px 28px;border-radius:4px;font-weight:700;cursor:pointer;font-size:12px">⎙ Print / Save as PDF</button></div>
+  </div></body></html>`;
+
+  const iframe=document.createElement('iframe');
+  iframe.id='i3d-print-frame';
+  iframe.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;border:none;z-index:99999;background:#fff';
+  document.body.appendChild(iframe);
+  iframe.contentDocument.open();
+  iframe.contentDocument.write(html);
+  iframe.contentDocument.close();
+  iframe.onload=function(){
+    const cb=iframe.contentDocument.createElement('button');
+    cb.textContent='✕ Close Preview';
+    cb.style.cssText='position:fixed;top:12px;right:12px;background:#333;color:#fff;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:700;z-index:10000';
+    cb.onclick=function(){iframe.remove();};
+    iframe.contentDocument.body.appendChild(cb);
+  };
+}
+
+// ─── PRINT HELPERS ───────────────────────────────
+function printOverviewOnly(){
+  const totalFee  = PROJECTS.reduce((a,p)=>a+p.fee,0);
+  const totalRecd = PROJECTS.reduce((a,p)=>a+received(p),0);
+  const clientName = PROJECTS[0]?.client||'';
+  const rows = PROJECTS.map(p=>{
+    const r=received(p), b=p.fee-r, pct=p.fee>0?Math.round(r/p.fee*100):0;
+    return `<tr>
+      <td style="padding:6px 8px;border-bottom:1px solid #eee;font-style:italic;color:#8a6820;font-family:Georgia,serif">${p.num}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eee;font-weight:600">${p.title}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eee;color:#888">${fmtINR(p.civil)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eee;color:#888">${p.rate}%</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eee;font-weight:600;color:#8a6820">${fmtINR(p.fee)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eee;color:#2d6e27">${fmtINR(r)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eee;color:#b87a10">${fmtINR(b)}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eee">
+        <div style="font-size:10px;color:#999;margin-bottom:3px">${pct}%</div>
+        <div style="height:4px;background:#eee;border-radius:2px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${pct>=100?'#4a8f42':'#c9a84c'};border-radius:2px"></div></div>
+      </td>
+    </tr>`;
+  }).join('');
+  const excl = ['Statutory Approvals','Specialized Consultants fees','Soil investigation','Extra 3D views beyond one main view','Physical scale models','Animation / walkthroughs','Interior design (if required)'];
+  const html = buildPrintShell(clientName) + `
+    <div style="font-size:17px;font-weight:600;margin-bottom:4px">Architectural Supervision Charges — Summary</div>
+    <div style="font-size:12px;color:#888;margin-bottom:16px">${clientName} · Generated: ${new Date().toLocaleDateString('en-IN')}</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+      <div style="background:#faf6ee;border:1px solid #e0d5b5;border-radius:4px;padding:12px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#999;margin-bottom:4px">Total Projects</div><div style="font-size:22px;font-weight:700;color:#8a6820">${PROJECTS.length}</div></div>
+      <div style="background:#faf6ee;border:1px solid #e0d5b5;border-radius:4px;padding:12px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#999;margin-bottom:4px">Total Fees</div><div style="font-size:22px;font-weight:700;color:#8a6820">${fmtINR(totalFee)}</div></div>
+      <div style="background:#faf6ee;border:1px solid #e0d5b5;border-radius:4px;padding:12px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#999;margin-bottom:4px">Collected</div><div style="font-size:22px;font-weight:700;color:#2d6e27">${fmtINR(totalRecd)}</div></div>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:20px">
+      <thead><tr>${['#','Project','Civil Cost','Rate','Fee','Received','Balance','Collection'].map(h=>`<th style="padding:6px 8px;background:#f5ead0;border-bottom:1px solid #e0d5b5;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:#777">${h}</th>`).join('')}</tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot><tr>
+        <td colspan="4" style="padding:6px 8px;background:#f5ead0;font-weight:700;color:#8a6820">TOTAL</td>
+        <td style="padding:6px 8px;background:#f5ead0;font-weight:700;color:#8a6820">${fmtINR(totalFee)}</td>
+        <td style="padding:6px 8px;background:#f5ead0;color:#2d6e27;font-weight:700">${fmtINR(totalRecd)}</td>
+        <td style="padding:6px 8px;background:#f5ead0;color:#b87a10;font-weight:700">${fmtINR(totalFee-totalRecd)}</td>
+        <td style="padding:6px 8px;background:#f5ead0"></td>
+      </tr></tfoot>
+    </table>
+    <div style="background:#fdf9ef;border-left:3px solid #c9a84c;padding:10px 14px;font-size:11px;color:#666;line-height:1.7">
+      <strong>Services Not Included (Paid Separately by Client):</strong><br/>
+      ${excl.map(e=>`— ${e}`).join(' &nbsp;&nbsp; ')}
+    </div>` + buildPrintFooter();
+  openPrintFrame(html);
+}
+
+function printProjectsInFrame(projects, isAll){
+  const clientName = PROJECTS[0]?.client||'';
+  const projSections = projects.map(p=>{
+    const recd=received(p), bal=p.fee-recd;
+    const schedRows = p.stages.map((s,i)=>`
+      <tr>
+        <td style="padding:5px 8px;border-bottom:1px solid #eee">Stage ${i+1}</td>
+        <td style="padding:5px 8px;border-bottom:1px solid #eee">${s.name}</td>
+        <td style="padding:5px 8px;border-bottom:1px solid #eee;text-align:right;font-weight:600;color:#8a6820">${fmtINR(s.amt)}</td>
+        <td style="padding:5px 8px;border-bottom:1px solid #eee;color:#888;font-size:10px">${p.stageRemarks[i]||''}</td>
+      </tr>`).join('');
+    const rcptRows = p.stages.map((s,i)=>{
+      let bg='#f9f9f9', col='#888', statusTxt='Pending';
+      if(s.hardReceived||s.status==='received'){ bg='#e8f5e2'; col='#2d6e27'; statusTxt='Received (T/R)'; }
+      else if(s.status==='due'){ bg='#fde8e8'; col='#c0392b'; statusTxt='⚠ Due'; }
+      else {
+        const firstPending = p.stages.findIndex(x=>!x.hardReceived&&x.status!=='received'&&x.status!=='due');
+        if(i===firstPending){ bg='#fffbe0'; col='#8a6820'; statusTxt='Next Stage'; }
+      }
+      const dateStr = s.date ? new Date(s.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '';
+      return `<tr style="background:${bg}">
+        <td style="padding:5px 8px;border-bottom:1px solid #eee;color:${col};font-weight:600">${i+1}</td>
+        <td style="padding:5px 8px;border-bottom:1px solid #eee;color:${col}">${dateStr}</td>
+        <td style="padding:5px 8px;border-bottom:1px solid #eee;color:${col}">${s.name}</td>
+        <td style="padding:5px 8px;border-bottom:1px solid #eee;text-align:right;color:${col};font-weight:600">${fmtINR(s.amt)}</td>
+        <td style="padding:5px 8px;border-bottom:1px solid #eee;color:${col};font-size:10px;font-weight:700">${statusTxt}</td>
+      </tr>`;
+    }).join('');
+    const totalAmt = p.stages.reduce((a,s)=>a+s.amt,0);
+    return `
+    <div style="page-break-inside:avoid;margin-bottom:24px;border:1px solid #ddd;border-radius:4px;overflow:hidden;border-top:3px solid #c9a84c">
+      <div style="background:#f5ead0;padding:10px 16px;border-bottom:1px solid #ddd">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <span style="font-family:'Crimson Pro',Georgia,serif;font-style:italic;font-size:22px;color:#7a6430;font-weight:600;margin-right:12px;padding-right:12px;border-right:1px solid #d4b87a">${p.num}</span>
+            <span style="font-size:14px;font-weight:600;color:#222">${p.title}</span>
+            ${p.client?`<span style="font-size:12px;color:#888;margin-left:8px">— ${p.client}</span>`:''}
+          </div>
+          <div style="text-align:right;font-size:11px">
+            <span style="color:#888">Fee: </span><strong style="color:#8a6820">${fmtINR(p.fee)}</strong>
+            &nbsp;|&nbsp;<span style="color:#888">Received: </span><strong style="color:#2d6e27">${fmtINR(recd)}</strong>
+            &nbsp;|&nbsp;<span style="color:#888">Balance: </span><strong style="color:#b87a10">${fmtINR(bal)}</strong>
+          </div>
+        </div>
+        <div style="font-size:11px;color:#888;margin-top:4px">${p.scope}</div>
+        ${p.notes?`<div style="font-size:10px;color:#999;margin-top:3px;font-style:italic">${p.notes}</div>`:''}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div style="padding:12px 14px;border-right:1px solid #eee">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#aaa;margin-bottom:8px">Payment Schedule</div>
+          <table style="width:100%;border-collapse:collapse;font-size:11px">
+            <thead><tr>
+              <th style="padding:4px 8px;background:#faf6ee;border-bottom:1px solid #e0d5b5;text-align:left;font-size:9px;text-transform:uppercase;color:#777">Stage</th>
+              <th style="padding:4px 8px;background:#faf6ee;border-bottom:1px solid #e0d5b5;text-align:left;font-size:9px;text-transform:uppercase;color:#777">Milestone</th>
+              <th style="padding:4px 8px;background:#faf6ee;border-bottom:1px solid #e0d5b5;text-align:right;font-size:9px;text-transform:uppercase;color:#777">Amount</th>
+              <th style="padding:4px 8px;background:#faf6ee;border-bottom:1px solid #e0d5b5;text-align:left;font-size:9px;text-transform:uppercase;color:#777">Remarks</th>
+            </tr></thead>
+            <tbody>${schedRows}</tbody>
+            <tfoot><tr><td colspan="2" style="padding:5px 8px;background:#f5ead0;font-weight:700;color:#8a6820;font-size:11px">Total</td><td style="padding:5px 8px;background:#f5ead0;text-align:right;font-weight:700;color:#8a6820">${fmtINR(totalAmt)}</td><td style="padding:5px 8px;background:#f5ead0"></td></tr></tfoot>
+          </table>
+        </div>
+        <div style="padding:12px 14px">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#aaa;margin-bottom:8px">Payment Receipt Tracker</div>
+          <table style="width:100%;border-collapse:collapse;font-size:11px">
+            <thead><tr>
+              <th style="padding:4px 8px;background:#faf6ee;border-bottom:1px solid #e0d5b5;font-size:9px;text-transform:uppercase;color:#777">#</th>
+              <th style="padding:4px 8px;background:#faf6ee;border-bottom:1px solid #e0d5b5;font-size:9px;text-transform:uppercase;color:#777">Date</th>
+              <th style="padding:4px 8px;background:#faf6ee;border-bottom:1px solid #e0d5b5;font-size:9px;text-transform:uppercase;color:#777">Description</th>
+              <th style="padding:4px 8px;background:#faf6ee;border-bottom:1px solid #e0d5b5;text-align:right;font-size:9px;text-transform:uppercase;color:#777">Amount</th>
+              <th style="padding:4px 8px;background:#faf6ee;border-bottom:1px solid #e0d5b5;font-size:9px;text-transform:uppercase;color:#777">Status</th>
+            </tr></thead>
+            <tbody>${rcptRows}</tbody>
+            <tfoot><tr><td colspan="3" style="padding:5px 8px;background:#f5ead0;font-weight:700;color:#8a6820">Total</td><td style="padding:5px 8px;background:#f5ead0;text-align:right;font-weight:700;color:#8a6820">${fmtINR(totalAmt)}</td><td style="padding:5px 8px;background:#f5ead0"></td></tr></tfoot>
+          </table>
+          <div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap">
+            <span style="font-size:9px;background:#e8f5e2;color:#2d6e27;padding:2px 7px;border-radius:3px;font-weight:700">■ Received</span>
+            <span style="font-size:9px;background:#fde8e8;color:#c0392b;padding:2px 7px;border-radius:3px;font-weight:700">■ Due</span>
+            <span style="font-size:9px;background:#fffbe0;color:#8a6820;padding:2px 7px;border-radius:3px;font-weight:700">■ Next Stage</span>
+            <span style="font-size:9px;background:#f9f9f9;color:#888;padding:2px 7px;border-radius:3px;font-weight:700">■ Pending</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const titleStr = isAll ? 'All Projects — Architectural Supervision Charges' : `${projects[0].title} — Supervision Charges`;
+  const html = buildPrintShell(clientName)
+    + `<div style="font-size:17px;font-weight:600;margin-bottom:4px">${titleStr}</div>`
+    + `<div style="font-size:12px;color:#888;margin-bottom:20px">${clientName} · Generated: ${new Date().toLocaleDateString('en-IN')}</div>`
+    + projSections
+    + buildPrintFooter();
+  openPrintFrame(html);
+}
+
+function buildPrintShell(clientName){
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600&family=Crimson+Pro:ital,wght@0,400;0,600&display=swap" rel="stylesheet"/>
+  <title>i3d — ${clientName}</title>
+  <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'EB Garamond',Georgia,serif;color:#222;font-size:12px;background:#fff}.page{max-width:960px;margin:0 auto;padding:28px}@media print{button{display:none!important}}</style>
+  </head><body><div class="page">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:14px;border-bottom:3px solid #c9a84c;margin-bottom:20px">
+    <div>
+      <div style="font-family:'Crimson Pro',Georgia,serif;font-style:italic;font-size:36px;font-weight:600;color:#2d5a27;line-height:1">i3d</div>
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#5a8a54;margin-top:3px">Interactive 3 Dimensions</div>
+      <div style="font-size:11px;color:#5a8a54;font-style:italic">Architectural Visualisation &amp; Design Studio</div>
+    </div>
+    <div style="text-align:right;font-size:11px;color:#666;line-height:1.8">
+      <strong style="display:block;font-size:13px;color:#222">Shakhith A.M</strong>
+      Architect, CA/97/21884<br/>Ph: 9363113693<br/>shakhith@gmail.com
+    </div>
+  </div>`;
+}
+
+function buildPrintFooter(){
+  return `<div style="margin-top:20px;padding-top:12px;border-top:1px solid #ddd;display:flex;justify-content:space-between;font-size:10px;color:#aaa">
+    <span>i3d Studio, Coimbatore — Architectural Supervision Charges</span>
+    <span>Generated: ${new Date().toLocaleDateString('en-IN')}</span>
+  </div>
+  <div style="text-align:center;margin-top:16px;padding-bottom:10px">
+    <button onclick="parent.triggerIframePrint()" style="background:#c9a84c;color:#111;border:none;padding:9px 28px;border-radius:4px;font-weight:700;cursor:pointer;font-size:12px">⎙ Print / Save as PDF</button>
+  </div>
+  </div></body></html>`;
+}
+
+function openPrintFrame(html){
+  const old=document.getElementById('i3d-print-frame');
+  if(old) old.remove();
+  const iframe=document.createElement('iframe');
+  iframe.id='i3d-print-frame';
+  iframe.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;border:none;z-index:99999;background:#fff';
+  document.body.appendChild(iframe);
+  iframe.contentDocument.open();
+  iframe.contentDocument.write(html);
+  iframe.contentDocument.close();
+  iframe.onload=function(){
+    const cb=iframe.contentDocument.createElement('button');
+    cb.textContent='✕ Close Preview';
+    cb.style.cssText='position:fixed;top:12px;right:12px;background:#333;color:#fff;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:700;z-index:10000';
+    cb.onclick=function(){iframe.remove();};
+    iframe.contentDocument.body.appendChild(cb);
+  };
+}
+
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+function fmtINR(n){
+  if(!n&&n!==0) return '—';
+  if(n>=10000000) return '₹'+(n/10000000).toFixed(2)+'Cr';
+  if(n>=100000)   return '₹'+(n/100000).toFixed(2)+'L';
+  return '₹'+Math.round(n).toLocaleString('en-IN');
+}
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+// ═══════════════════════════════════════════════
+// IFRAME PRINT TRIGGER (called by button inside iframe)
+// ═══════════════════════════════════════════════
+function triggerIframePrint(){
+  const iframe = document.getElementById('i3d-print-frame');
+  if(iframe) iframe.contentWindow.print();
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+renderAll();
+document.getElementById('toolbar-badge').textContent = PROJECTS[0]?.client || 'Projects';
+PROJECTS.forEach(p=>applyRowColours(p.id));
+</script>
+</body>
+</html>
