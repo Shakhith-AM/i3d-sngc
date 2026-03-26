@@ -7,295 +7,179 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Josefin+Sans:wght@200;300;400;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:           #0d0f0c;
-    --surface:      #141710;
-    --card:         #191d15;
-    --card-hover:   #1c2117;
-    --border:       #252c1d;
-    --border-soft:  #1d2318;
-    --gold:         #c8a84b;
-    --gold-dim:     #8a6f31;
-    --green:        #4a7c3f;
-    --green-bright: #5d9e50;
-    --text:         #cac6ba;
-    --text-dim:     #6a675c;
-    --text-muted:   #3a3a32;
-    --amber:        #d4870b;
-    --white:        #e8e3d9;
+    --bg:#0d0f0c; --surface:#141710; --card:#191d15; --card-hover:#1c2117;
+    --border:#252c1d; --border-soft:#1d2318;
+    --gold:#c8a84b; --gold-dim:#8a6f31;
+    --green:#4a7c3f; --green-bright:#5d9e50;
+    --text:#cac6ba; --text-dim:#6a675c; --text-muted:#3a3a32;
+    --amber:#d4870b; --red:#c0523b; --white:#e8e3d9;
+    --st-rcv-bg:#1e3320; --st-rcv-txt:#6abf6a; --st-rcv-bdr:#2e5c2e;
+    --st-due-bg:#3a2200; --st-due-txt:#e09030; --st-due-bdr:#6a4010;
+    --st-nxt-bg:#162030; --st-nxt-txt:#5aaacf; --st-nxt-bdr:#204060;
+    --st-pnd-bg:#1a1a18; --st-pnd-txt:#505048; --st-pnd-bdr:#2a2a24;
   }
-  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--text); font-family:'Josefin Sans',sans-serif; font-weight:300; min-height:100vh; }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-serif;font-weight:300;min-height:100vh;}
 
-  /* ── HEADER ── */
-  header {
-    background:#0a0c09;
-    border-bottom:1px solid var(--border);
-    padding:22px 48px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+  /* HEADER */
+  header{background:#0a0c09;border-bottom:1px solid var(--border);padding:22px 48px;display:flex;justify-content:space-between;align-items:center;}
+  .logo-main{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:2.5rem;color:var(--gold);line-height:1;letter-spacing:-1.5px;}
+  .logo-sub{font-size:0.59rem;letter-spacing:0.4em;color:var(--text-dim);font-weight:400;margin-top:3px;}
+  .logo-tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.76rem;color:var(--gold-dim);margin-top:2px;}
+  .hdr-right{text-align:right;font-size:0.75rem;color:var(--text-dim);line-height:1.8;}
+  .hdr-right strong{display:block;font-size:0.9rem;color:var(--white);font-weight:600;letter-spacing:0.04em;margin-bottom:2px;}
+
+  /* TOOLBAR */
+  .toolbar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 48px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .toolbar-l{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
+  .project-badge-wrap{position:relative;display:inline-flex;align-items:center;}
+  .project-badge{background:var(--green);color:#fff;font-size:0.67rem;font-weight:700;letter-spacing:0.14em;padding:5px 13px;border-radius:3px;cursor:pointer;transition:background .18s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+  .project-badge:hover{background:var(--green-bright);}
+  .project-badge .ei{font-size:0.65rem;opacity:0.7;}
+  .badge-input{display:none;background:var(--surface);border:1px solid var(--green);color:var(--white);font-family:'Josefin Sans',sans-serif;font-size:0.67rem;font-weight:700;letter-spacing:0.14em;padding:5px 10px;border-radius:3px;outline:none;width:180px;text-transform:uppercase;}
+  .badge-input.active{display:block;}
+  .project-badge.hidden{display:none;}
+  .toolbar-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.9rem;color:var(--text-dim);white-space:nowrap;}
+  .btn{font-family:'Josefin Sans',sans-serif;font-size:0.67rem;font-weight:600;letter-spacing:0.1em;padding:8px 16px;border-radius:3px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .18s;}
+  .btn-ghost{background:transparent;color:var(--text-dim);border:1px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--text-dim);color:var(--text);}
+  .btn-green{background:var(--green);color:#fff;}
+  .btn-green:hover{background:var(--green-bright);}
+
+  /* MAIN */
+  main{padding:36px 48px 72px;max-width:1340px;margin:0 auto;}
+
+  /* SECTION CARD */
+  .section-card{background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:16px;overflow:hidden;transition:border-color .2s;}
+  .section-card:hover{border-color:#2e3624;}
+  .sec-head{padding:20px 28px 16px;display:flex;align-items:flex-start;justify-content:space-between;cursor:pointer;user-select:none;transition:background .15s;}
+  .sec-head:hover{background:var(--card-hover);}
+  .sec-num{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--gold-dim);line-height:1;min-width:54px;flex-shrink:0;}
+  .sec-info{flex:1;min-width:0;}
+  .title-line{display:flex;align-items:baseline;flex-wrap:wrap;}
+  .sec-title-static{font-size:1.02rem;font-weight:600;color:var(--white);letter-spacing:0.03em;white-space:nowrap;}
+  .fee-inline-wrap{display:inline-flex;align-items:baseline;gap:2px;margin-left:6px;border-bottom:1px dashed var(--gold-dim);padding-bottom:1px;cursor:text;transition:border-color .2s;}
+  .fee-inline-wrap:hover{border-color:var(--gold);}
+  .fee-at{font-size:1.02rem;font-weight:600;color:var(--gold);}
+  .fee-pct-input{background:transparent;border:none;outline:none;font-family:'Josefin Sans',sans-serif;font-size:1.02rem;font-weight:600;color:var(--gold);width:36px;text-align:center;padding:0 2px;}
+  .fee-pct-suffix{font-size:1.02rem;font-weight:600;color:var(--gold);}
+  .sec-subtitle{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold);font-size:0.88rem;margin-top:5px;}
+  .sec-descriptor{margin-top:5px;display:flex;align-items:baseline;flex-wrap:wrap;gap:4px;}
+  .desc-static{font-family:'DM Mono',monospace;font-size:0.64rem;color:var(--text-muted);}
+  .visit-term-input{background:transparent;border:none;border-bottom:1px dashed var(--text-muted);outline:none;font-family:'DM Mono',monospace;font-size:0.64rem;color:var(--text-dim);padding:0 2px;width:280px;transition:border-color .2s,color .2s;}
+  .visit-term-input:focus{border-color:var(--gold-dim);color:var(--text);}
+  .visit-term-input::placeholder{color:var(--text-muted);font-style:italic;}
+  .sec-head-right{display:flex;align-items:center;gap:12px;flex-shrink:0;margin-left:12px;}
+  .status-badge{font-size:0.6rem;font-weight:700;letter-spacing:0.16em;padding:5px 11px;border-radius:3px;cursor:pointer;transition:all .18s;}
+  .s-progress{background:rgba(74,124,63,0.18);color:var(--green-bright);border:1px solid var(--green);}
+  .s-pending{background:rgba(212,135,11,0.14);color:var(--amber);border:1px solid rgba(212,135,11,0.4);}
+  .s-complete{background:rgba(180,180,180,0.06);color:var(--text-dim);border:1px solid var(--border);}
+  .chevron{font-size:0.7rem;color:var(--text-muted);transition:transform .22s;flex-shrink:0;}
+  .chevron.open{transform:rotate(180deg);}
+
+  /* METRICS */
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);}
+  .metric{padding:16px 24px;border-right:1px solid var(--border);}
+  .metric:last-child{border-right:none;}
+  .m-label{font-size:0.58rem;letter-spacing:0.22em;color:var(--text-muted);font-weight:600;margin-bottom:7px;}
+  .m-val{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;line-height:1;}
+  .mv-civil{color:var(--text);} .mv-fee{color:var(--gold);} .mv-received{color:var(--green-bright);} .mv-balance{color:#d47a60;}
+  .m-sub{font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--amber);margin-top:4px;}
+
+  /* EXPANDABLE BODY */
+  .sec-body{display:none;border-top:1px solid var(--border-soft);}
+  .sec-body.open{display:block;}
+
+  /* PAYMENT SCHEDULE */
+  .stages-wrap{padding:22px 28px 16px;}
+  .stages-heading{font-size:0.58rem;letter-spacing:0.28em;color:var(--text-dim);font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+  .add-stage-btn{font-family:'Josefin Sans',sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:0.12em;background:transparent;border:1px dashed var(--border);color:var(--text-muted);padding:4px 10px;border-radius:3px;cursor:pointer;transition:all .18s;}
+  .add-stage-btn:hover{border-color:var(--gold-dim);color:var(--gold-dim);}
+
+  .stages-table{width:100%;border-collapse:collapse;}
+  .stages-table th{font-size:0.56rem;letter-spacing:0.2em;color:var(--text-muted);font-weight:700;text-align:left;padding:6px 10px;border-bottom:1px solid var(--border);}
+  .stages-table th:last-child{text-align:right;}
+  .stages-table td{padding:8px 10px;border-bottom:1px solid var(--border-soft);vertical-align:middle;}
+  .stages-table tr:last-child td{border-bottom:none;}
+  .stage-lbl{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--text-muted);white-space:nowrap;}
+
+  .ci{background:transparent;border:none;outline:none;font-family:'Josefin Sans',sans-serif;font-size:0.78rem;color:var(--text);padding:2px 4px;border-bottom:1px solid transparent;transition:border-color .15s;width:100%;}
+  .ci:hover{border-bottom-color:var(--border);}
+  .ci:focus{border-bottom-color:var(--gold-dim);color:var(--white);}
+  .ci-amt{font-family:'DM Mono',monospace;width:90px;}
+  .ci-date{width:110px;font-size:0.72rem;color:var(--text-dim);}
+
+  .st-sel{font-family:'Josefin Sans',sans-serif;font-size:0.59rem;font-weight:700;letter-spacing:0.1em;padding:3px 8px;border-radius:3px;border:none;cursor:pointer;outline:none;-webkit-appearance:none;transition:all .18s;}
+  .ssel-received{background:var(--st-rcv-bg);color:var(--st-rcv-txt);border:1px solid var(--st-rcv-bdr);}
+  .ssel-due{background:var(--st-due-bg);color:var(--st-due-txt);border:1px solid var(--st-due-bdr);}
+  .ssel-next{background:var(--st-nxt-bg);color:var(--st-nxt-txt);border:1px solid var(--st-nxt-bdr);}
+  .ssel-pending{background:var(--st-pnd-bg);color:var(--st-pnd-txt);border:1px solid var(--st-pnd-bdr);}
+
+  .rm-stage{background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:0.78rem;padding:2px 6px;border-radius:2px;transition:color .15s;}
+  .rm-stage:hover{color:var(--red);}
+  .stages-total-row td{border-top:1px solid var(--border);padding-top:10px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--gold);font-weight:500;}
+
+  /* PROGRESS */
+  .progress-wrap{padding:4px 28px 18px;}
+  .progress-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;}
+  .legend-item{display:flex;align-items:center;gap:5px;font-size:0.57rem;letter-spacing:0.1em;color:var(--text-dim);font-weight:600;}
+  .ldot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+  .ld-r{background:var(--st-rcv-txt);} .ld-d{background:var(--st-due-txt);} .ld-n{background:var(--st-nxt-txt);} .ld-p{background:#2e2e28;}
+  .prog-track{height:5px;background:#161612;border-radius:3px;overflow:hidden;display:flex;}
+  .pseg{height:100%;transition:width .4s;}
+  .ps-r{background:var(--st-rcv-txt);} .ps-d{background:var(--st-due-txt);} .ps-n{background:var(--st-nxt-txt);} .ps-p{background:#252520;}
+
+  /* EDIT PANEL */
+  .edit-panel{background:rgba(0,0,0,0.3);border-top:1px solid var(--border-soft);padding:22px 28px 20px;}
+  .ep-heading{font-size:0.58rem;letter-spacing:0.28em;color:var(--text-dim);font-weight:700;margin-bottom:16px;}
+  .edit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;}
+  .ef label{display:block;font-size:0.58rem;letter-spacing:0.2em;color:var(--text-muted);font-weight:600;margin-bottom:6px;}
+  .ef input,.ef select{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:0.82rem;padding:9px 12px;border-radius:3px;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+  .ef input:focus,.ef select:focus{border-color:var(--gold-dim);}
+  .sv-row{display:flex;align-items:center;gap:14px;padding:12px 16px;background:rgba(212,135,11,0.04);border:1px solid rgba(212,135,11,0.16);border-radius:4px;margin-bottom:14px;flex-wrap:wrap;}
+  .sv-label{font-size:0.6rem;letter-spacing:0.18em;color:var(--amber);font-weight:600;flex-shrink:0;}
+  .sv-row input{width:70px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:0.82rem;padding:7px 10px;border-radius:3px;outline:none;}
+  .sv-note{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.78rem;color:var(--text-dim);flex:1;}
+  .sv-total{font-family:'DM Mono',monospace;font-size:0.74rem;color:var(--amber);}
+  .ep-actions{display:flex;gap:10px;justify-content:flex-end;}
+
+  /* ADD SECTION */
+  .add-sec-btn{width:100%;padding:14px;background:transparent;border:1px dashed var(--border);border-radius:6px;color:var(--text-dim);font-family:'Josefin Sans',sans-serif;font-size:0.7rem;font-weight:600;letter-spacing:0.18em;cursor:pointer;transition:all .2s;margin-bottom:20px;}
+  .add-sec-btn:hover{border-color:var(--gold-dim);color:var(--gold-dim);background:rgba(200,168,75,0.03);}
+
+  /* SUMMARY BAR */
+  .summary-bar{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-top:8px;}
+  .sum-item{flex:1;padding:18px 26px;border-right:1px solid var(--border);}
+  .sum-item:last-child{border-right:none;}
+  .sum-label{font-size:0.57rem;letter-spacing:0.22em;color:var(--text-muted);font-weight:600;margin-bottom:6px;}
+  .sum-val{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--gold);}
+  .sv-rcv{color:var(--green-bright);} .sv-bal{color:#d47a60;}
+
+  @media print{
+    .btn,.add-sec-btn,.ep-actions,.edit-panel,.add-stage-btn,.rm-stage{display:none!important;}
+    .project-badge .ei{display:none;}
+    .sec-body{display:block!important;}
+    body{background:#fff;color:#111;}
+    header{background:#fff;border-bottom:1px solid #ccc;}
+    .logo-main{color:#8a6f31;}
+    .section-card{border-color:#ccc;page-break-inside:avoid;}
   }
-  .logo-main { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:2.5rem; color:var(--gold); line-height:1; letter-spacing:-1.5px; }
-  .logo-sub  { font-size:0.59rem; letter-spacing:0.4em; color:var(--text-dim); font-weight:400; margin-top:3px; }
-  .logo-tag  { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.76rem; color:var(--gold-dim); margin-top:2px; }
-  .hdr-right { text-align:right; font-size:0.75rem; color:var(--text-dim); line-height:1.8; }
-  .hdr-right strong { display:block; font-size:0.9rem; color:var(--white); font-weight:600; letter-spacing:0.04em; margin-bottom:2px; }
-
-  /* ── TOOLBAR ── */
-  .toolbar {
-    background:var(--surface);
-    border-bottom:1px solid var(--border);
-    padding:10px 48px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-  }
-  .toolbar-l { display:flex; align-items:center; gap:14px; flex:1; min-width:0; }
-
-  /* editable project badge */
-  .project-badge-wrap { position:relative; display:inline-flex; align-items:center; }
-  .project-badge {
-    background:var(--green);
-    color:#fff;
-    font-size:0.67rem;
-    font-weight:700;
-    letter-spacing:0.14em;
-    padding:5px 13px;
-    border-radius:3px;
-    cursor:pointer;
-    transition:background .18s;
-    white-space:nowrap;
-    display:flex;
-    align-items:center;
-    gap:6px;
-  }
-  .project-badge:hover { background:var(--green-bright); }
-  .project-badge .edit-icon { font-size:0.65rem; opacity:0.7; }
-
-  .badge-input {
-    display:none;
-    background:var(--surface);
-    border:1px solid var(--green);
-    color:var(--white);
-    font-family:'Josefin Sans',sans-serif;
-    font-size:0.67rem;
-    font-weight:700;
-    letter-spacing:0.14em;
-    padding:5px 10px;
-    border-radius:3px;
-    outline:none;
-    width:140px;
-    text-transform:uppercase;
-  }
-  .badge-input.active { display:block; }
-  .project-badge.hidden { display:none; }
-
-  .toolbar-label { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:var(--text-dim); white-space:nowrap; }
-
-  .btn { font-family:'Josefin Sans',sans-serif; font-size:0.67rem; font-weight:600; letter-spacing:0.1em; padding:8px 16px; border-radius:3px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:all .18s; }
-  .btn-ghost  { background:transparent; color:var(--text-dim); border:1px solid var(--border); }
-  .btn-ghost:hover { border-color:var(--text-dim); color:var(--text); }
-  .btn-green  { background:var(--green); color:#fff; }
-  .btn-green:hover { background:var(--green-bright); }
-
-  /* ── MAIN ── */
-  main { padding:36px 48px 72px; max-width:1340px; margin:0 auto; }
-
-  /* ── SECTION CARD ── */
-  .section-card { background:var(--card); border:1px solid var(--border); border-radius:6px; margin-bottom:16px; overflow:hidden; transition:border-color .2s; }
-  .section-card:hover { border-color:#2e3624; }
-
-  .sec-head { padding:22px 28px 18px; display:flex; align-items:flex-start; justify-content:space-between; cursor:pointer; user-select:none; transition:background .15s; }
-  .sec-head:hover { background:var(--card-hover); }
-
-  .sec-num { font-family:'Cormorant Garamond',serif; font-size:2.5rem; font-weight:300; color:var(--gold-dim); line-height:1; min-width:54px; flex-shrink:0; }
-  .sec-info { flex:1; min-width:0; }
-
-  /* ── TITLE LINE: editable inline ── */
-  .title-line { display:flex; align-items:baseline; flex-wrap:wrap; gap:0; margin-bottom:0; }
-
-  .sec-title-static {
-    font-size:1.02rem;
-    font-weight:600;
-    color:var(--white);
-    letter-spacing:0.03em;
-    white-space:nowrap;
-  }
-
-  /* The "@ ___%" part — inline editable */
-  .fee-inline-wrap {
-    display:inline-flex;
-    align-items:baseline;
-    gap:2px;
-    margin-left:6px;
-    border-bottom:1px dashed var(--gold-dim);
-    padding-bottom:1px;
-    cursor:text;
-    transition:border-color .2s;
-  }
-  .fee-inline-wrap:hover { border-color:var(--gold); }
-
-  .fee-at { font-size:1.02rem; font-weight:600; color:var(--gold); }
-
-  .fee-pct-input {
-    background:transparent;
-    border:none;
-    outline:none;
-    font-family:'Josefin Sans',sans-serif;
-    font-size:1.02rem;
-    font-weight:600;
-    color:var(--gold);
-    width:36px;
-    text-align:center;
-    padding:0 2px;
-    letter-spacing:0.03em;
-  }
-  .fee-pct-suffix { font-size:1.02rem; font-weight:600; color:var(--gold); }
-
-  /* subtitle — editable */
-  .sec-subtitle {
-    font-family:'Cormorant Garamond',serif;
-    font-style:italic;
-    color:var(--gold);
-    font-size:0.88rem;
-    margin-top:6px;
-  }
-
-  /* descriptor line — visit terms, editable */
-  .sec-descriptor {
-    margin-top:6px;
-    display:flex;
-    align-items:baseline;
-    flex-wrap:wrap;
-    gap:4px;
-  }
-  .desc-static {
-    font-family:'DM Mono',monospace;
-    font-size:0.64rem;
-    color:var(--text-muted);
-  }
-  .visit-term-input {
-    background:transparent;
-    border:none;
-    border-bottom:1px dashed var(--text-muted);
-    outline:none;
-    font-family:'DM Mono',monospace;
-    font-size:0.64rem;
-    color:var(--text-dim);
-    padding:0 2px;
-    width:240px;
-    transition:border-color .2s, color .2s;
-  }
-  .visit-term-input:focus {
-    border-color:var(--gold-dim);
-    color:var(--text);
-  }
-  .visit-term-input::placeholder { color:var(--text-muted); font-style:italic; }
-
-  /* status */
-  .sec-head-right { display:flex; align-items:center; gap:12px; flex-shrink:0; margin-left:12px; }
-  .status-badge { font-size:0.6rem; font-weight:700; letter-spacing:0.16em; padding:5px 11px; border-radius:3px; cursor:pointer; transition:all .18s; }
-  .s-progress { background:rgba(74,124,63,0.18); color:var(--green-bright); border:1px solid var(--green); }
-  .s-pending  { background:rgba(212,135,11,0.14); color:var(--amber); border:1px solid rgba(212,135,11,0.4); }
-  .s-complete { background:rgba(180,180,180,0.06); color:var(--text-dim); border:1px solid var(--border); }
-  .chevron { font-size:0.7rem; color:var(--text-muted); transition:transform .22s; flex-shrink:0; }
-  .chevron.open { transform:rotate(180deg); }
-
-  /* ── METRICS ── */
-  .metrics { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--border); }
-  .metric { padding:18px 26px; border-right:1px solid var(--border); }
-  .metric:last-child { border-right:none; }
-  .m-label { font-size:0.58rem; letter-spacing:0.22em; color:var(--text-muted); font-weight:600; margin-bottom:8px; }
-  .m-val   { font-family:'Cormorant Garamond',serif; font-size:1.65rem; font-weight:600; line-height:1; }
-  .mv-civil    { color:var(--text); }
-  .mv-fee      { color:var(--gold); }
-  .mv-received { color:var(--green-bright); }
-  .mv-balance  { color:#d47a60; }
-  .m-sub { font-family:'DM Mono',monospace; font-size:0.59rem; color:var(--amber); margin-top:5px; }
-
-  /* ── EDIT PANEL ── */
-  .edit-panel { display:none; background:rgba(0,0,0,0.3); border-top:1px solid var(--border-soft); padding:26px 28px 22px; }
-  .edit-panel.open { display:block; }
-  .ep-heading { font-size:0.59rem; letter-spacing:0.28em; color:var(--text-dim); font-weight:700; margin-bottom:18px; }
-
-  .edit-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:16px; }
-  .ef label { display:block; font-size:0.58rem; letter-spacing:0.2em; color:var(--text-muted); font-weight:600; margin-bottom:6px; }
-  .ef input, .ef select, .ef textarea {
-    width:100%; background:var(--surface); border:1px solid var(--border);
-    color:var(--text); font-family:'DM Mono',monospace; font-size:0.82rem;
-    padding:9px 12px; border-radius:3px; outline:none; transition:border-color .2s;
-    -webkit-appearance:none; resize:none;
-  }
-  .ef input:focus, .ef select:focus, .ef textarea:focus { border-color:var(--gold-dim); }
-
-  /* extra visits */
-  .sv-row {
-    display:flex; align-items:center; gap:14px; padding:13px 18px;
-    background:rgba(212,135,11,0.04); border:1px solid rgba(212,135,11,0.16);
-    border-radius:4px; margin-bottom:16px; flex-wrap:wrap;
-  }
-  .sv-row .sv-label { font-size:0.6rem; letter-spacing:0.18em; color:var(--amber); font-weight:600; flex-shrink:0; }
-  .sv-row input { width:70px; background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:'DM Mono',monospace; font-size:0.83rem; padding:7px 10px; border-radius:3px; outline:none; }
-  .sv-row input:focus { border-color:var(--amber); }
-  .sv-row .sv-note { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.78rem; color:var(--text-dim); flex:1; }
-  .sv-row .sv-total { font-family:'DM Mono',monospace; font-size:0.74rem; color:var(--amber); flex-shrink:0; }
-
-  .ep-actions { display:flex; gap:10px; justify-content:flex-end; }
-
-  /* ── ADD SECTION ── */
-  .add-section-btn {
-    width:100%;
-    padding:14px;
-    background:transparent;
-    border:1px dashed var(--border);
-    border-radius:6px;
-    color:var(--text-dim);
-    font-family:'Josefin Sans',sans-serif;
-    font-size:0.7rem;
-    font-weight:600;
-    letter-spacing:0.18em;
-    cursor:pointer;
-    transition:all .2s;
-    margin-bottom:20px;
-  }
-  .add-section-btn:hover { border-color:var(--gold-dim); color:var(--gold-dim); background:rgba(200,168,75,0.03); }
-
-  /* ── SUMMARY BAR ── */
-  .summary-bar { display:flex; background:var(--surface); border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-top:8px; }
-  .sum-item { flex:1; padding:18px 26px; border-right:1px solid var(--border); }
-  .sum-item:last-child { border-right:none; }
-  .sum-label { font-size:0.57rem; letter-spacing:0.22em; color:var(--text-muted); font-weight:600; margin-bottom:6px; }
-  .sum-val   { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:600; color:var(--gold); }
-  .sum-val.sv-rcv { color:var(--green-bright); }
-  .sum-val.sv-bal { color:#d47a60; }
-
-  /* print */
-  @media print {
-    .btn, .add-section-btn, .ep-actions, .edit-panel, .toolbar .btn-ghost { display:none !important; }
-    .project-badge .edit-icon { display:none; }
-    body { background:#fff; color:#111; }
-    header { background:#fff; border-bottom:1px solid #ccc; }
-    .logo-main { color:#8a6f31; }
-    .sec-num { color:#c8a84b; }
-    .m-val.mv-fee { color:#8a6f31; }
-  }
-
-  @media(max-width:860px){
-    header, .toolbar, main { padding-left:16px; padding-right:16px; }
-    .metrics { grid-template-columns:repeat(2,1fr); }
-    .metric:nth-child(2){ border-right:none; }
-    .metric:nth-child(3){ border-top:1px solid var(--border); border-right:1px solid var(--border); }
-    .metric:nth-child(4){ border-top:1px solid var(--border); border-right:none; }
-    .edit-grid { grid-template-columns:repeat(2,1fr); }
-    .summary-bar { flex-wrap:wrap; }
-    .sum-item { flex:1 1 40%; border:none; border-bottom:1px solid var(--border); }
+  @media(max-width:900px){
+    header,.toolbar,main{padding-left:16px;padding-right:16px;}
+    .stages-wrap,.progress-wrap,.edit-panel{padding-left:16px;padding-right:16px;}
+    .metrics{grid-template-columns:repeat(2,1fr);}
+    .metric:nth-child(2){border-right:none;}
+    .metric:nth-child(3){border-top:1px solid var(--border);border-right:1px solid var(--border);}
+    .metric:nth-child(4){border-top:1px solid var(--border);border-right:none;}
+    .edit-grid{grid-template-columns:repeat(2,1fr);}
+    .summary-bar{flex-wrap:wrap;}
+    .sum-item{flex:1 1 40%;border:none;border-bottom:1px solid var(--border);}
+    .stages-table th:nth-child(4),.stages-table td:nth-child(4){display:none;}
   }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <div>
     <div class="logo-main">i3d</div>
@@ -304,23 +188,18 @@
   </div>
   <div class="hdr-right">
     <strong>Shakhith A.M</strong>
-    Architect, CA/97/21884<br>
-    Ph: 9363113693<br>
-    shakhith@gmail.com
+    Architect, CA/97/21884<br>Ph: 9363113693<br>shakhith@gmail.com
   </div>
 </header>
 
-<!-- TOOLBAR -->
 <div class="toolbar">
   <div class="toolbar-l">
-    <!-- editable client badge -->
     <div class="project-badge-wrap">
       <div class="project-badge" id="badge-label" onclick="startBadgeEdit()">
-        <span id="badge-text">SNGC</span>
-        <span class="edit-icon">✎</span>
+        <span id="badge-text">SNGC</span><span class="ei">✎</span>
       </div>
       <input class="badge-input" id="badge-input" type="text" value="SNGC"
-        onblur="endBadgeEdit()" onkeydown="if(event.key==='Enter')endBadgeEdit()" maxlength="20" />
+        onblur="endBadgeEdit()" onkeydown="if(event.key==='Enter')endBadgeEdit()" maxlength="30"/>
     </div>
     <div class="toolbar-label">Architectural Consultation Charges</div>
   </div>
@@ -330,322 +209,240 @@
   </div>
 </div>
 
-<!-- MAIN -->
 <main id="app"></main>
 
 <script>
-// ══════════════════════════════════════════════
-//  DATA MODEL
-//  title       = editable inline (static part before "@")
-//  feePct      = editable inline right in the title "@ ____%"
-//  visitTerms  = free-text descriptor line (placeholder shown)
-//  civilCost, received, extraVisits, visitRate = numeric fields
-// ══════════════════════════════════════════════
-let sections = [
-  {
-    id: 1,
-    subtitle:    "Entrance Gateway — SNGC",
-    status:      "IN PROGRESS",
-    feePct:      4,
-    civilCost:   1700000,
-    received:    20000,
-    visitTerms:  "1 site visit per week; additional visits at ₹3,000 per visit",
-    extraVisits: 0,
-    visitRate:   3000,
-  },
-  {
-    id: 2,
-    subtitle:    "Ladies Hostel → Classroom Conversion — SNGC",
-    status:      "IN PROGRESS",
-    feePct:      4,
-    civilCost:   2200000,
-    received:    35000,
-    visitTerms:  "1 site visit per week; additional visits at ₹3,000 per visit",
-    extraVisits: 0,
-    visitRate:   3000,
-  },
-  {
-    id: 3,
-    subtitle:    "Admission Room & Classroom Refurbishing — SNGC",
-    status:      "PENDING",
-    feePct:      5,
-    civilCost:   850000,
-    received:    0,
-    visitTerms:  "Visits at crucial stages of construction as mutually agreed",
-    extraVisits: 0,
-    visitRate:   3000,
-  },
+let sections=[
+  {id:1,subtitle:"Entrance Gateway — SNGC",status:"IN PROGRESS",feePct:4,civilCost:1700000,received:20000,
+   visitTerms:"1 site visit per week; additional visits at ₹3,000 per visit",extraVisits:0,visitRate:3000,
+   stages:[
+    {m:"Mobilization Advance", amt:20000, date:"30 Dec 2025", rem:"Upon agreement signing",         st:"received"},
+    {m:"Design Completion",    amt:30000, date:"",            rem:"Upon approval of drawings & BOQ", st:"due"},
+    {m:"Foundation Complete",  amt:20000, date:"",            rem:"Post-foundation inspection",       st:"next"},
+    {m:"Structure Complete",   amt:15000, date:"",            rem:"Post-superstructure completion",   st:"pending"},
+  ]},
+  {id:2,subtitle:"Ladies Hostel → Classroom Conversion — SNGC",status:"IN PROGRESS",feePct:4,civilCost:2200000,received:96000,
+   visitTerms:"1 site visit per week; additional visits at ₹3,000 per visit",extraVisits:0,visitRate:3000,
+   stages:[
+    {m:"Mobilization Advance", amt:96000, date:"16 Feb 2026", rem:"Upon agreement signing",             st:"received"},
+    {m:"Design Completion",    amt:80000, date:"",            rem:"Upon approval of drawings & BOQ",     st:"due"},
+    {m:"Foundation Complete",  amt:80000, date:"",            rem:"Post-foundation inspection",           st:"next"},
+    {m:"Structure Complete",   amt:80000, date:"",            rem:"Post-superstructure completion",       st:"pending"},
+    {m:"Finishing Complete",   amt:40000, date:"",            rem:"Post-finishing works",                 st:"pending"},
+    {m:"Final Handover",       amt:24000, date:"",            rem:"Upon project completion",              st:"pending"},
+  ]},
+  {id:3,subtitle:"Admission Room & Classroom Refurbishing — SNGC",status:"PENDING",feePct:5,civilCost:700000,received:0,
+   visitTerms:"Visits at crucial stages of construction as mutually agreed",extraVisits:0,visitRate:3000,
+   stages:[
+    {m:"Design Completion",  amt:17500, date:"", rem:"Upon approval of drawings & BOQ", st:"next"},
+    {m:"Finishing Complete", amt:17500, date:"", rem:"Post-finishing works",             st:"pending"},
+  ]},
+  {id:4,subtitle:"Landscaping Design — SNGC",status:"PENDING",feePct:5,civilCost:750000,received:0,
+   visitTerms:"Visits at crucial stages; 3D visualisation included",extraVisits:0,visitRate:3000,
+   stages:[
+    {m:"3D Viz & Design Charges", amt:20000, date:"", rem:"Upon design finalisation", st:"due"},
+    {m:"Design Completion",       amt:30000, date:"", rem:"Upon work completion",     st:"next"},
+  ]},
+  {id:5,subtitle:"Staff Toilet Refurbishing — SNGC",status:"PENDING",feePct:5,civilCost:700000,received:0,
+   visitTerms:"Visits at crucial stages of construction as mutually agreed",extraVisits:0,visitRate:3000,
+   stages:[
+    {m:"Mobilization Advance", amt:17500, date:"", rem:"Upon design finalisation", st:"next"},
+    {m:"Design Completion",    amt:17500, date:"", rem:"Upon work completion",     st:"pending"},
+  ]},
 ];
 
-let nextId = 4;
-const openPanels = new Set();
+let nextId=6;
+const open=new Set();
 
-// ── helpers ───────────────────────────────────
-function fmtINR(n) {
-  const abs = Math.abs(Math.round(n));
-  if (abs >= 100000) return '₹' + (abs / 100000).toFixed(2) + 'L';
-  return '₹' + abs.toLocaleString('en-IN');
-}
-function calcFee(s) {
-  const base  = Math.round(s.civilCost * s.feePct / 100);
-  const extra = (s.extraVisits || 0) * (s.visitRate || 3000);
-  return { base, extra, total: base + extra };
-}
-function statusCls(st) {
-  if (st === 'IN PROGRESS') return 's-progress';
-  if (st === 'PENDING')     return 's-pending';
-  return 's-complete';
-}
-function statusCycle(idx) {
-  const order = ['IN PROGRESS', 'PENDING', 'COMPLETE'];
-  const cur = sections[idx].status;
-  sections[idx].status = order[(order.indexOf(cur) + 1) % order.length];
-  renderAll();
-  syncOpen();
-}
-function totals() {
-  let c=0, f=0, r=0;
-  sections.forEach(s => { const {total}=calcFee(s); c+=s.civilCost; f+=total; r+=s.received; });
-  return { c, f, r, b: f-r };
-}
-function syncOpen() {
-  openPanels.forEach(i => {
-    const p = document.getElementById(`ep-${i}`);
-    const v = document.getElementById(`chv-${i}`);
-    if (p) { p.classList.add('open'); v.classList.add('open'); }
-  });
-}
+function fmtINR(n){const a=Math.abs(Math.round(n));return a>=100000?'₹'+(a/100000).toFixed(2)+'L':'₹'+a.toLocaleString('en-IN');}
+function calcFee(s){const b=Math.round(s.civilCost*s.feePct/100),e=(s.extraVisits||0)*(s.visitRate||3000);return{base:b,extra:e,total:b+e};}
+function stTotal(s){return s.stages.reduce((a,st)=>a+st.amt,0);}
+function stCls(v){if(v==='received')return 's-progress';if(v==='pending'||v==='next')return 's-pending';return 's-complete';}
+function selCls(v){return v==='received'?'ssel-received':v==='due'?'ssel-due':v==='next'?'ssel-next':'ssel-pending';}
+function cycleStatus(idx){const o=['IN PROGRESS','PENDING','COMPLETE'],c=sections[idx].status;sections[idx].status=o[(o.indexOf(c)+1)%o.length];renderAll();syncOpen();}
+function totals(){let c=0,f=0,r=0;sections.forEach(s=>{const{total}=calcFee(s);c+=s.civilCost;f+=total;r+=s.received;});return{c,f,r,b:f-r};}
+function syncOpen(){open.forEach(i=>{const b=document.getElementById('sb-'+i),v=document.getElementById('chv-'+i);if(b)b.classList.add('open');if(v)v.classList.add('open');});}
+function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-// ── project badge edit ────────────────────────
-function startBadgeEdit() {
-  document.getElementById('badge-label').classList.add('hidden');
-  const inp = document.getElementById('badge-input');
-  inp.classList.add('active');
-  inp.focus(); inp.select();
+function startBadgeEdit(){document.getElementById('badge-label').classList.add('hidden');const i=document.getElementById('badge-input');i.classList.add('active');i.focus();i.select();}
+function endBadgeEdit(){const i=document.getElementById('badge-input'),v=i.value.trim().toUpperCase()||'CLIENT';i.value=v;document.getElementById('badge-text').textContent=v;i.classList.remove('active');document.getElementById('badge-label').classList.remove('hidden');}
+
+function togglePanel(idx){const b=document.getElementById('sb-'+idx),v=document.getElementById('chv-'+idx);if(open.has(idx)){open.delete(idx);b.classList.remove('open');v.classList.remove('open');}else{open.add(idx);b.classList.add('open');v.classList.add('open');}}
+
+function updSec(idx,field,raw){sections[idx][field]=(field==='status'||field==='visitTerms'||field==='subtitle')?raw:(parseFloat(raw)||0);renderAll();syncOpen();}
+
+function updStage(idx,si,field,raw){
+  const st=sections[idx].stages[si];
+  if(field==='amt')st.amt=parseFloat(raw)||0;
+  else st[field]=raw;
+  if(field==='st'||field==='amt'){sections[idx].received=sections[idx].stages.filter(x=>x.st==='received').reduce((a,x)=>a+x.amt,0);}
+  renderAll();syncOpen();
 }
-function endBadgeEdit() {
-  const inp = document.getElementById('badge-input');
-  const val = inp.value.trim().toUpperCase() || 'CLIENT';
-  inp.value = val;
-  document.getElementById('badge-text').textContent = val;
-  inp.classList.remove('active');
-  document.getElementById('badge-label').classList.remove('hidden');
+function addStage(idx){sections[idx].stages.push({m:"New Milestone",amt:0,date:"",rem:"",st:"pending"});renderAll();syncOpen();}
+function rmStage(idx,si,e){e.stopPropagation();if(sections[idx].stages.length<=1)return;sections[idx].stages.splice(si,1);sections[idx].received=sections[idx].stages.filter(x=>x.st==='received').reduce((a,x)=>a+x.amt,0);renderAll();syncOpen();}
+
+function addSection(){
+  sections.push({id:nextId++,subtitle:"New Work Package",status:"PENDING",feePct:5,civilCost:0,received:0,visitTerms:"",extraVisits:0,visitRate:3000,stages:[{m:"Stage 1",amt:0,date:"",rem:"",st:"pending"}]});
+  renderAll();const ni=sections.length-1;open.add(ni);syncOpen();
+  setTimeout(()=>{const c=document.getElementById('card-'+ni);if(c)c.scrollIntoView({behavior:'smooth',block:'nearest'});},50);
 }
+function rmSection(idx,e){e.stopPropagation();if(sections.length===1)return;sections.splice(idx,1);open.clear();renderAll();}
 
-// ── toggle edit panel ──────────────────────────
-function toggleEdit(idx) {
-  const p = document.getElementById(`ep-${idx}`);
-  const v = document.getElementById(`chv-${idx}`);
-  if (openPanels.has(idx)) {
-    openPanels.delete(idx);
-    p.classList.remove('open');
-    v.classList.remove('open');
-  } else {
-    openPanels.add(idx);
-    p.classList.add('open');
-    v.classList.add('open');
-  }
-}
+function renderAll(){
+  const app=document.getElementById('app');app.innerHTML='';
+  sections.forEach((s,idx)=>{
+    const{base,extra,total}=calcFee(s),balance=total-s.received,isOpen=open.has(idx),tot=stTotal(s);
+    const rcv=s.stages.filter(x=>x.st==='received').reduce((a,x)=>a+x.amt,0);
+    const due=s.stages.filter(x=>x.st==='due').reduce((a,x)=>a+x.amt,0);
+    const nxt=s.stages.filter(x=>x.st==='next').reduce((a,x)=>a+x.amt,0);
+    const pnd=s.stages.filter(x=>x.st==='pending').reduce((a,x)=>a+x.amt,0);
+    const d=tot||1;
+    const rows=s.stages.map((st,si)=>`
+      <tr>
+        <td class="stage-lbl">Stage ${si+1}</td>
+        <td><input class="ci" value="${escH(st.m)}" onclick="event.stopPropagation()" onchange="updStage(${idx},${si},'m',this.value)" onblur="updStage(${idx},${si},'m',this.value)"/></td>
+        <td><input class="ci ci-amt" type="number" value="${st.amt}" onclick="event.stopPropagation()" onchange="updStage(${idx},${si},'amt',this.value)"/></td>
+        <td><input class="ci ci-date" value="${escH(st.date)}" placeholder="dd mmm yyyy" onclick="event.stopPropagation()" onchange="updStage(${idx},${si},'date',this.value)" onblur="updStage(${idx},${si},'date',this.value)"/></td>
+        <td><input class="ci" value="${escH(st.rem)}" placeholder="Remarks" onclick="event.stopPropagation()" onchange="updStage(${idx},${si},'rem',this.value)" onblur="updStage(${idx},${si},'rem',this.value)"/></td>
+        <td style="text-align:right;white-space:nowrap">
+          <select class="st-sel ${selCls(st.st)}" onclick="event.stopPropagation()" onchange="updStage(${idx},${si},'st',this.value)">
+            <option value="received" ${st.st==='received'?'selected':''}>■ RECEIVED</option>
+            <option value="due"      ${st.st==='due'?'selected':''}>⚠ DUE</option>
+            <option value="next"     ${st.st==='next'?'selected':''}>◎ NEXT</option>
+            <option value="pending"  ${st.st==='pending'?'selected':''}>○ PENDING</option>
+          </select>
+          <button class="rm-stage" onclick="rmStage(${idx},${si},event)" title="Remove">✕</button>
+        </td>
+      </tr>`).join('');
 
-// ── update field ───────────────────────────────
-function update(idx, field, raw) {
-  sections[idx][field] = (field === 'status' || field === 'visitTerms' || field === 'subtitle')
-    ? raw
-    : (parseFloat(raw) || 0);
-  renderAll();
-  syncOpen();
-}
-
-// ── add / remove section ───────────────────────
-function addSection() {
-  sections.push({
-    id:          nextId++,
-    subtitle:    "New Work Package",
-    status:      "PENDING",
-    feePct:      5,
-    civilCost:   0,
-    received:    0,
-    visitTerms:  "",
-    extraVisits: 0,
-    visitRate:   3000,
-  });
-  renderAll();
-  // auto-open new panel
-  const newIdx = sections.length - 1;
-  openPanels.add(newIdx);
-  syncOpen();
-  // scroll to it
-  setTimeout(() => {
-    const card = document.getElementById(`card-${newIdx}`);
-    if (card) card.scrollIntoView({ behavior:'smooth', block:'nearest' });
-  }, 50);
-}
-function removeSection(idx, e) {
-  e.stopPropagation();
-  if (sections.length === 1) return;
-  sections.splice(idx, 1);
-  openPanels.clear();
-  renderAll();
-}
-
-// ── render ─────────────────────────────────────
-function renderAll() {
-  const app = document.getElementById('app');
-  app.innerHTML = '';
-
-  sections.forEach((s, idx) => {
-    const { base, extra, total } = calcFee(s);
-    const balance = total - s.received;
-    const isOpen  = openPanels.has(idx);
-
-    const card = document.createElement('div');
-    card.className = 'section-card';
-    card.id = `card-${idx}`;
-
-    card.innerHTML = `
-      <!-- ── SECTION HEADER ── -->
-      <div class="sec-head" onclick="toggleEdit(${idx})">
-        <div class="sec-num">0${idx + 1}</div>
+    const card=document.createElement('div');
+    card.className='section-card';card.id='card-'+idx;
+    card.innerHTML=`
+      <div class="sec-head" onclick="togglePanel(${idx})">
+        <div class="sec-num">0${idx+1}</div>
         <div class="sec-info">
-
-          <!-- Title + inline % -->
           <div class="title-line">
             <span class="sec-title-static">Architectural Consultation Charges</span>
             <span class="fee-inline-wrap" onclick="event.stopPropagation()">
               <span class="fee-at">&nbsp;@&nbsp;</span>
-              <input class="fee-pct-input" type="number" min="1" max="20" step="0.5"
-                value="${s.feePct}"
-                title="Edit consultation fee %"
-                onchange="update(${idx},'feePct',this.value)"
-                onclick="event.stopPropagation()" />
+              <input class="fee-pct-input" type="number" min="1" max="20" step="0.5" value="${s.feePct}"
+                onclick="event.stopPropagation()" onchange="updSec(${idx},'feePct',this.value)"/>
               <span class="fee-pct-suffix">%</span>
             </span>
           </div>
-
-          <!-- Subtitle — editable in panel -->
-          <div class="sec-subtitle">${s.subtitle}</div>
-
-          <!-- Visit terms descriptor -->
+          <div class="sec-subtitle">${escH(s.subtitle)}</div>
           <div class="sec-descriptor">
             <span class="desc-static">Site supervision —</span>
-            <input class="visit-term-input"
-              type="text"
-              value="${escHtml(s.visitTerms)}"
+            <input class="visit-term-input" type="text" value="${escH(s.visitTerms)}"
               placeholder="e.g. 1 visit/week · at crucial stages · as mutually agreed"
               onclick="event.stopPropagation()"
-              onchange="update(${idx},'visitTerms',this.value)"
-              onblur="update(${idx},'visitTerms',this.value)" />
+              onchange="updSec(${idx},'visitTerms',this.value)"
+              onblur="updSec(${idx},'visitTerms',this.value)"/>
           </div>
         </div>
-
         <div class="sec-head-right">
-          <span class="status-badge ${statusCls(s.status)}"
-            onclick="event.stopPropagation(); statusCycle(${idx})"
-            title="Click to cycle status">${s.status}</span>
+          <span class="status-badge ${stCls(s.status)}" onclick="event.stopPropagation();cycleStatus(${idx})" title="Click to cycle">${s.status}</span>
           <span class="chevron${isOpen?' open':''}" id="chv-${idx}">▾</span>
         </div>
       </div>
 
-      <!-- ── METRICS ── -->
       <div class="metrics">
-        <div class="metric">
-          <div class="m-label">CIVIL COST</div>
-          <div class="m-val mv-civil">${fmtINR(s.civilCost)}</div>
-        </div>
+        <div class="metric"><div class="m-label">CIVIL COST</div><div class="m-val mv-civil">${fmtINR(s.civilCost)}</div></div>
         <div class="metric">
           <div class="m-label">FEE @ ${s.feePct}%</div>
-          <div class="m-val mv-fee">
-            ${fmtINR(base)}
-            ${extra > 0 ? `<span style="font-size:.85rem;color:var(--amber)"> +${fmtINR(extra)}</span>` : ''}
-          </div>
-          ${extra > 0 ? `<div class="m-sub">${s.extraVisits} extra visit${s.extraVisits>1?'s':''} × ₹${(s.visitRate||3000).toLocaleString('en-IN')}</div>` : ''}
+          <div class="m-val mv-fee">${fmtINR(base)}${extra>0?`<span style="font-size:.85rem;color:var(--amber)"> +${fmtINR(extra)}</span>`:''}</div>
+          ${extra>0?`<div class="m-sub">${s.extraVisits} extra visit${s.extraVisits>1?'s':''} × ₹${(s.visitRate||3000).toLocaleString('en-IN')}</div>`:''}
         </div>
-        <div class="metric">
-          <div class="m-label">RECEIVED</div>
-          <div class="m-val mv-received">${fmtINR(s.received)}</div>
-        </div>
-        <div class="metric">
-          <div class="m-label">BALANCE</div>
-          <div class="m-val mv-balance">${fmtINR(balance)}</div>
-        </div>
+        <div class="metric"><div class="m-label">RECEIVED</div><div class="m-val mv-received">${fmtINR(s.received)}</div></div>
+        <div class="metric"><div class="m-label">BALANCE</div><div class="m-val mv-balance">${fmtINR(balance)}</div></div>
       </div>
 
-      <!-- ── EDIT PANEL ── -->
-      <div class="edit-panel${isOpen?' open':''}" id="ep-${idx}">
-        <div class="ep-heading">FINANCIALS — SECTION ${idx+1}</div>
+      <div class="sec-body${isOpen?' open':''}" id="sb-${idx}">
 
-        <div class="edit-grid">
-          <div class="ef" style="grid-column:1/-1">
-            <label>WORK PACKAGE / SCOPE DESCRIPTION</label>
-            <input type="text" value="${escHtml(s.subtitle)}"
-              onchange="update(${idx},'subtitle',this.value)" />
+        <div class="stages-wrap">
+          <div class="stages-heading">
+            PAYMENT SCHEDULE
+            <button class="add-stage-btn" onclick="event.stopPropagation();addStage(${idx})">+ ADD STAGE</button>
           </div>
-          <div class="ef">
-            <label>CIVIL / PROJECT COST (₹)</label>
-            <input type="number" value="${s.civilCost}"
-              onchange="update(${idx},'civilCost',this.value)" />
+          <table class="stages-table">
+            <thead><tr>
+              <th>STAGE</th><th>MILESTONE</th><th>AMOUNT</th><th>DATE</th><th>REMARKS</th><th style="text-align:right">STATUS</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+            <tfoot><tr class="stages-total-row">
+              <td colspan="2" style="font-family:'Josefin Sans',sans-serif;font-size:0.62rem;letter-spacing:0.15em;font-weight:700;color:var(--text-dim);">TOTAL</td>
+              <td>${fmtINR(tot)}</td><td colspan="3"></td>
+            </tr></tfoot>
+          </table>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-legend">
+            <span class="legend-item"><span class="ldot ld-r"></span>RECEIVED</span>
+            <span class="legend-item"><span class="ldot ld-d"></span>DUE</span>
+            <span class="legend-item"><span class="ldot ld-n"></span>NEXT STAGE</span>
+            <span class="legend-item"><span class="ldot ld-p"></span>PENDING</span>
           </div>
-          <div class="ef">
-            <label>AMOUNT RECEIVED (₹)</label>
-            <input type="number" value="${s.received}"
-              onchange="update(${idx},'received',this.value)" />
-          </div>
-          <div class="ef">
-            <label>RATE PER EXTRA VISIT (₹)</label>
-            <input type="number" value="${s.visitRate||3000}"
-              onchange="update(${idx},'visitRate',this.value)" />
+          <div class="prog-track">
+            <div class="pseg ps-r" style="width:${(rcv/d*100).toFixed(1)}%"></div>
+            <div class="pseg ps-d" style="width:${(due/d*100).toFixed(1)}%"></div>
+            <div class="pseg ps-n" style="width:${(nxt/d*100).toFixed(1)}%"></div>
+            <div class="pseg ps-p" style="width:${(pnd/d*100).toFixed(1)}%"></div>
           </div>
         </div>
 
-        <!-- Extra visits -->
-        <div class="sv-row">
-          <span class="sv-label">EXTRA VISITS THIS CYCLE</span>
-          <input type="number" min="0" step="1" value="${s.extraVisits||0}"
-            onchange="update(${idx},'extraVisits',this.value)" />
-          <span class="sv-note">Visits beyond the agreed schedule, billed at ₹${(s.visitRate||3000).toLocaleString('en-IN')} per visit.</span>
-          ${(s.extraVisits||0) > 0 ? `<span class="sv-total">+ ${fmtINR((s.extraVisits||0)*(s.visitRate||3000))}</span>` : ''}
+        <div class="edit-panel">
+          <div class="ep-heading">FINANCIALS — SECTION ${idx+1}</div>
+          <div class="edit-grid">
+            <div class="ef" style="grid-column:1/-1">
+              <label>WORK PACKAGE / SCOPE DESCRIPTION</label>
+              <input type="text" value="${escH(s.subtitle)}" onchange="updSec(${idx},'subtitle',this.value)"/>
+            </div>
+            <div class="ef">
+              <label>CIVIL / PROJECT COST (₹)</label>
+              <input type="number" value="${s.civilCost}" onchange="updSec(${idx},'civilCost',this.value)"/>
+            </div>
+            <div class="ef">
+              <label>STATUS</label>
+              <select onchange="updSec(${idx},'status',this.value)">
+                <option value="IN PROGRESS" ${s.status==='IN PROGRESS'?'selected':''}>IN PROGRESS</option>
+                <option value="PENDING"     ${s.status==='PENDING'?'selected':''}>PENDING</option>
+                <option value="COMPLETE"    ${s.status==='COMPLETE'?'selected':''}>COMPLETE</option>
+              </select>
+            </div>
+            <div class="ef">
+              <label>RATE PER EXTRA VISIT (₹)</label>
+              <input type="number" value="${s.visitRate||3000}" onchange="updSec(${idx},'visitRate',this.value)"/>
+            </div>
+          </div>
+          <div class="sv-row">
+            <span class="sv-label">EXTRA VISITS THIS CYCLE</span>
+            <input type="number" min="0" step="1" value="${s.extraVisits||0}" onchange="updSec(${idx},'extraVisits',this.value)"/>
+            <span class="sv-note">Visits beyond agreed schedule, billed at ₹${(s.visitRate||3000).toLocaleString('en-IN')} per visit.</span>
+            ${(s.extraVisits||0)>0?`<span class="sv-total">+ ${fmtINR((s.extraVisits||0)*(s.visitRate||3000))}</span>`:''}
+          </div>
+          <div class="ep-actions">
+            ${sections.length>1?`<button class="btn btn-ghost" style="color:#c0523b;border-color:rgba(192,82,59,0.3)" onclick="rmSection(${idx},event)">✕ REMOVE SECTION</button>`:''}
+          </div>
         </div>
 
-        <div class="ep-actions">
-          ${sections.length > 1
-            ? `<button class="btn btn-ghost" style="color:#c0523b;border-color:rgba(192,82,59,0.3)"
-                onclick="removeSection(${idx},event)">✕ REMOVE</button>`
-            : ''}
-          <button class="btn btn-ghost" onclick="toggleEdit(${idx})">CLOSE</button>
-        </div>
-      </div>
-    `;
+      </div>`;
     app.appendChild(card);
   });
 
-  // Add section button
-  const addBtn = document.createElement('button');
-  addBtn.className = 'add-section-btn';
-  addBtn.textContent = '+ ADD WORK PACKAGE';
-  addBtn.onclick = addSection;
+  const addBtn=document.createElement('button');
+  addBtn.className='add-sec-btn';addBtn.textContent='+ ADD WORK PACKAGE';addBtn.onclick=addSection;
   app.appendChild(addBtn);
 
-  // Summary
-  const { c, f, r, b } = totals();
-  const bar = document.createElement('div');
-  bar.className = 'summary-bar';
-  bar.innerHTML = `
+  const{c,f,r,b}=totals();
+  const bar=document.createElement('div');bar.className='summary-bar';
+  bar.innerHTML=`
     <div class="sum-item"><div class="sum-label">TOTAL PROJECT COST</div><div class="sum-val">${fmtINR(c)}</div></div>
     <div class="sum-item"><div class="sum-label">TOTAL CONSULTATION FEE</div><div class="sum-val">${fmtINR(f)}</div></div>
     <div class="sum-item"><div class="sum-label">TOTAL RECEIVED</div><div class="sum-val sv-rcv">${fmtINR(r)}</div></div>
-    <div class="sum-item"><div class="sum-label">TOTAL OUTSTANDING</div><div class="sum-val sv-bal">${fmtINR(b)}</div></div>
-  `;
+    <div class="sum-item"><div class="sum-label">TOTAL OUTSTANDING</div><div class="sum-val sv-bal">${fmtINR(b)}</div></div>`;
   app.appendChild(bar);
 }
-
-function escHtml(s) {
-  return String(s||'')
-    .replace(/&/g,'&amp;')
-    .replace(/"/g,'&quot;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;');
-}
-
 renderAll();
 </script>
 </body>
