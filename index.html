@@ -188,7 +188,7 @@
   </div>
   <div class="hdr-right">
     <strong>Shakhith A.M</strong>
-    Architect, CA/97/21884<br>Ph: 9363113693<br>shakhith@gmail.com
+    Architect, CA/97/21884<br>Ph: 9363113693<br><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="205348414b4849544860474d41494c0e434f4d">[email&#160;protected]</a>
   </div>
 </header>
 
@@ -203,7 +203,11 @@
     </div>
     <div class="toolbar-label">Architectural Consultation Charges</div>
   </div>
-  <div style="display:flex;gap:10px">
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <span id="save-status" style="font-size:0.62rem;color:#5d9e50;letter-spacing:0.1em;display:none"></span>
+    <button class="btn btn-ghost" onclick="exportSession()" title="Download session as JSON file" style="border-color:rgba(93,158,80,0.4);color:#5d9e50">💾 SAVE SESSION</button>
+    <button class="btn btn-ghost" onclick="document.getElementById('import-input').click()" title="Load a previously saved session" style="border-color:rgba(90,170,207,0.4);color:#5aaacf">📂 LOAD SESSION</button>
+    <input type="file" id="import-input" accept=".json" style="display:none" onchange="importSession(event)"/>
     <button class="btn btn-green" onclick="addSection()">+ ADD SECTION</button>
     <button class="btn btn-ghost" onclick="window.print()">⬒ PRINT / PDF</button>
   </div>
@@ -211,7 +215,7 @@
 
 <main id="app"></main>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 let sections=[
   {id:1,subtitle:"Entrance Gateway — SNGC",status:"IN PROGRESS",feePct:4,civilCost:1700000,received:20000,
    visitTerms:"1 site visit per week; additional visits at ₹3,000 per visit",extraVisits:0,visitRate:3000,
@@ -287,6 +291,90 @@ function addSection(){
   setTimeout(()=>{const c=document.getElementById('card-'+ni);if(c)c.scrollIntoView({behavior:'smooth',block:'nearest'});},50);
 }
 function rmSection(idx,e){e.stopPropagation();if(sections.length===1)return;sections.splice(idx,1);open.clear();renderAll();}
+
+// ── AUTO-SAVE to localStorage ──────────────────────
+const LS_KEY = 'i3d-sngc-session';
+let saveTimer = null;
+
+function autoSave(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    try {
+      const payload = {
+        _saved: new Date().toISOString(),
+        sections,
+        nextId,
+        badge: document.getElementById('badge-text')?.textContent || 'SNGC'
+      };
+      localStorage.setItem(LS_KEY, JSON.stringify(payload));
+      const el = document.getElementById('save-status');
+      if(el){ el.textContent = 'Auto-saved ✓'; el.style.display='inline'; setTimeout(()=>el.style.display='none', 2000); }
+    } catch(e){}
+  }, 1500);
+}
+
+function loadFromStorage(){
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return false;
+    const d = JSON.parse(raw);
+    if(d.sections) sections = d.sections;
+    if(d.nextId)   nextId = d.nextId;
+    if(d.badge){
+      const bt = document.getElementById('badge-text');
+      const bi = document.getElementById('badge-input');
+      if(bt) bt.textContent = d.badge;
+      if(bi) bi.value = d.badge;
+    }
+    return true;
+  } catch(e){ return false; }
+}
+
+// ── EXPORT SESSION ─────────────────────────────────
+function exportSession(){
+  const badge = document.getElementById('badge-text')?.textContent || 'SNGC';
+  const payload = {
+    _meta:{ exportedAt: new Date().toISOString(), project: badge, tool: 'i3d Consultation Charges' },
+    sections, nextId, badge
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `i3d_Consultation_${badge}_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  const el = document.getElementById('save-status');
+  if(el){ el.textContent = 'Session saved ✓'; el.style.display='inline'; setTimeout(()=>el.style.display='none', 2500); }
+}
+
+// ── IMPORT SESSION ─────────────────────────────────
+function importSession(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const d = JSON.parse(ev.target.result);
+      if(d.sections) sections = d.sections;
+      if(d.nextId)   nextId = d.nextId;
+      if(d.badge){
+        const bt = document.getElementById('badge-text');
+        const bi = document.getElementById('badge-input');
+        if(bt) bt.textContent = d.badge;
+        if(bi) bi.value = d.badge;
+      }
+      open.clear();
+      renderAll();
+      const el = document.getElementById('save-status');
+      if(el){ el.textContent = `Session loaded ✓ — ${d._meta?.project||''}`; el.style.display='inline'; setTimeout(()=>el.style.display='none', 3000); }
+    } catch(err){
+      alert('Could not load file. Please check it is a valid i3d session file.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
 
 function renderAll(){
   const app=document.getElementById('app');app.innerHTML='';
@@ -440,10 +528,17 @@ function renderAll(){
     <div class="sum-item"><div class="sum-label">TOTAL PROJECT COST</div><div class="sum-val">${fmtINR(c)}</div></div>
     <div class="sum-item"><div class="sum-label">TOTAL CONSULTATION FEE</div><div class="sum-val">${fmtINR(f)}</div></div>
     <div class="sum-item"><div class="sum-label">TOTAL RECEIVED</div><div class="sum-val sv-rcv">${fmtINR(r)}</div></div>
-    <div class="sum-item"><div class="sum-label">TOTAL OUTSTANDING</div><div class="sum-val sv-bal">${fmtINR(b)}</div></div>`;
+    <div class="sum-item"><div class="sum-label">BALANCE DUE</div><div class="sum-val sv-bal">${fmtINR(b)}</div></div>`;
   app.appendChild(bar);
+
+  autoSave();
 }
-renderAll();
+
+// ── INIT ───────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  loadFromStorage();
+  renderAll();
+});
 </script>
 </body>
 </html>
