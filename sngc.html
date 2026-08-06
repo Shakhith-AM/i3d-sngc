@@ -292,8 +292,13 @@ function addSection(){
 }
 function rmSection(idx,e){e.stopPropagation();if(sections.length===1)return;sections.splice(idx,1);open.clear();renderAll();}
 
+// ── CLIENT IDENTITY ─────────────────────────────────
+// Unique per file — keeps each client's localStorage isolated even when
+// multiple client files are opened from the same origin/folder.
+const CLIENT_SLUG = 'sngc';
+
 // ── AUTO-SAVE to localStorage ──────────────────────
-const LS_KEY = 'i3d-sngc-session';
+const LS_KEY = 'i3d-consultation-' + CLIENT_SLUG;
 let saveTimer = null;
 
 function autoSave(){
